@@ -1,9 +1,5 @@
 # Modul 1: Wireshark & Setup GNS3
 
-### Laboratorium Komunikasi Data dan Jaringan Komputer 2026/2027
-
----
-
 ## Daftar Isi
 - [0. Pendahuluan](#0-pendahuluan)
 - [1. Wireshark](#1-wireshark)
