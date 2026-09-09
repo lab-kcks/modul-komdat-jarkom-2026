@@ -1,54 +1,55 @@
 # Modul 1: Wireshark & Setup GNS3
 
 ## Daftar Isi
-- [0. Pendahuluan](#0-pendahuluan)
-- [1. Wireshark](#1-wireshark)
-  - [1.1 Struktur Paket Jaringan](#11-struktur-paket-jaringan)
-  - [1.2 Instalasi](#12-instalasi)
-  - [1.3 Filter](#13-filter)
-    - [1.3.1 Capture Filter](#131-capture-filter)
-    - [1.3.2 Display Filter](#132-display-filter)
-    - [1.3.3 Perbandingan Capture Filter vs Display Filter](#133-perbandingan-capture-filter-vs-display-filter)
-  - [1.4 Navigasi UI dan Ringkasan Trafik (Statistics)](#14-navigasi-ui-dan-ringkasan-trafik-statistics)
-    - [1.4.1 Panel Utama dan Pewarnaan Paket](#141-panel-utama-dan-pewarnaan-paket)
-    - [1.4.2 Follow Stream (TCP, UDP, HTTP)](#142-follow-stream-tcp-udp-http)
-    - [1.4.3 Ringkasan Trafik (Statistics)](#143-ringkasan-trafik-statistics)
-  - [1.5 Export Data Hasil Packet Capture](#15-export-data-hasil-packet-capture)
-  - [1.6 Menangkap dan Mendekripsi Trafik HTTPS/TLS](#16-menangkap-dan-mendekripsi-trafik-httpstls)
-  - [1.7 Studi Kasus: Memantau Trafik FTP](#17-studi-kasus-memantau-trafik-ftp)
-    - [1.7.1 Arsitektur Dual-Channel FTP: Active vs Passive Mode](#171-arsitektur-dual-channel-ftp-active-vs-passive-mode)
-    - [1.7.2 Menyiapkan Server (FileZilla Server)](#172-menyiapkan-server-filezilla-server)
-    - [1.7.3 Koneksi dari Client](#173-koneksi-dari-client)
-    - [1.7.4 Upload dan Download](#174-upload-dan-download)
-  - [1.8 Pola Protokol Jaringan Esensial](#18-pola-protokol-jaringan-esensial)
-    - [1.8.1 TCP Three-Way Handshake dan Teardown](#181-tcp-three-way-handshake-dan-teardown)
-    - [1.8.2 Resolusi Alamat dengan ARP](#182-resolusi-alamat-dengan-arp)
-    - [1.8.3 Mekanisme Diagnostik ICMP](#183-mekanisme-diagnostik-icmp)
-- [2. GNS3](#2-gns3)
-  - [2.1 Apa itu GNS3?](#21-apa-itu-gns3)
-  - [2.2 Instalasi GNS3 VM](#22-instalasi-gns3-vm)
-    - [Opsi A: VirtualBox](#opsi-a-virtualbox)
-    - [Opsi B: VMware Workstation Pro](#opsi-b-vmware-workstation-pro)
-    - [Troubleshooting Virtualisasi Hardware (VT-x, AMD-V, Hyper-V)](#troubleshooting-virtualisasi-hardware-vt-x-amd-v-hyper-v)
-  - [2.3 Memasukkan Image Node ke GNS3](#23-memasukkan-image-node-ke-gns3)
-  - [2.4 Instalasi dan Setup GNS3 Client](#24-instalasi-dan-setup-gns3-client)
-  - [2.5 Setup IP di Node](#25-setup-ip-di-node)
-  - [2.6 Akses Sebuah Node ke Internet](#26-akses-sebuah-node-ke-internet)
-  - [2.7 Membuat Topologi Terintegrasi](#27-membuat-topologi-terintegrasi)
-    - [2.7.1 Skema Pengalamatan IP](#271-skema-pengalamatan-ip)
-    - [2.7.2 Konfigurasi Router Linux (Multi-Homed)](#272-konfigurasi-router-linux-multi-homed)
-    - [2.7.3 Mengaktifkan Kernel IP Forwarding](#273-mengaktifkan-kernel-ip-forwarding)
-    - [2.7.4 Konfigurasi Source NAT (iptables MASQUERADE)](#274-konfigurasi-source-nat-iptables-masquerade)
-    - [2.7.5 Konfigurasi Client dan DNS Resolver](#275-konfigurasi-client-dan-dns-resolver)
-    - [2.7.6 Verifikasi Konektivitas End-to-End](#276-verifikasi-konektivitas-end-to-end)
-  - [2.8 Ketentuan, Persistensi, Tips, Trik, dan Troubleshooting](#28-ketentuan-persistensi-tips-trik-dan-troubleshooting)
-- [3. Menghubungkan Wireshark dengan GNS3](#3-menghubungkan-wireshark-dengan-gns3)
-  - [3.1 Capture Langsung dari Link Topologi](#31-capture-langsung-dari-link-topologi)
-  - [3.2 Capture di Dalam Node dengan tcpdump dan TShark](#32-capture-di-dalam-node-dengan-tcpdump-dan-tshark)
-  - [3.3 Contoh Skenario Analisis: Verifikasi SNAT dan ARP](#33-contoh-skenario-analisis-verifikasi-snat-dan-arp)
-- [4. Latihan](#4-latihan)
-- [5. Troubleshooting Common Pitfalls](#5-troubleshooting-common-pitfalls)
-- [6. Referensi](#6-referensi)
+- [Modul 1: Wireshark \& Setup GNS3](#modul-1-wireshark--setup-gns3)
+  - [Daftar Isi](#daftar-isi)
+  - [0. Pendahuluan](#0-pendahuluan)
+  - [1. Wireshark](#1-wireshark)
+    - [1.1 Struktur Paket Jaringan](#11-struktur-paket-jaringan)
+    - [1.2 Instalasi](#12-instalasi)
+    - [1.3 Filter](#13-filter)
+      - [1.3.1 Capture Filter](#131-capture-filter)
+      - [1.3.2 Display Filter](#132-display-filter)
+      - [1.3.3 Perbandingan Capture Filter vs Display Filter](#133-perbandingan-capture-filter-vs-display-filter)
+    - [1.4 Navigasi UI dan Ringkasan Trafik (Statistics)](#14-navigasi-ui-dan-ringkasan-trafik-statistics)
+      - [1.4.1 Panel Utama dan Pewarnaan Paket](#141-panel-utama-dan-pewarnaan-paket)
+      - [1.4.2 Follow Stream (TCP, UDP, HTTP)](#142-follow-stream-tcp-udp-http)
+      - [1.4.3 Ringkasan Trafik (Statistics)](#143-ringkasan-trafik-statistics)
+    - [1.5 Export Data Hasil Packet Capture](#15-export-data-hasil-packet-capture)
+    - [1.6 Menangkap dan Mendekripsi Trafik HTTPS/TLS](#16-menangkap-dan-mendekripsi-trafik-httpstls)
+    - [1.7 Studi Kasus: Analisis Protokol Jaringan](#17-studi-kasus-analisis-protokol-jaringan)
+      - [1.7.1 FTP (File Transfer Protocol)](#171-ftp-file-transfer-protocol)
+      - [1.7.2 SMTP (Simple Mail Transfer Protocol)](#172-smtp-simple-mail-transfer-protocol)
+      - [1.7.3 HTTP (Hypertext Transfer Protocol)](#173-http-hypertext-transfer-protocol)
+    - [1.8 Pola Protokol Jaringan Esensial](#18-pola-protokol-jaringan-esensial)
+      - [1.8.1 TCP Three-Way Handshake dan Teardown](#181-tcp-three-way-handshake-dan-teardown)
+      - [1.8.2 Resolusi Alamat dengan ARP](#182-resolusi-alamat-dengan-arp)
+      - [1.8.3 Mekanisme Diagnostik ICMP](#183-mekanisme-diagnostik-icmp)
+  - [2. GNS3](#2-gns3)
+    - [2.1 Apa itu GNS3?](#21-apa-itu-gns3)
+    - [2.2 Instalasi GNS3](#22-instalasi-gns3)
+      - [Opsi A: VirtualBox](#opsi-a-virtualbox)
+      - [Opsi B: VMware Workstation Pro](#opsi-b-vmware-workstation-pro)
+      - [Troubleshooting Virtualisasi Hardware (VT-x, AMD-V, Hyper-V)](#troubleshooting-virtualisasi-hardware-vt-x-amd-v-hyper-v)
+    - [2.3 Memasukkan Image Node ke GNS3](#23-memasukkan-image-node-ke-gns3)
+    - [2.4 Instalasi dan Setup GNS3 Client](#24-instalasi-dan-setup-gns3-client)
+    - [2.5 Setup IP di Node](#25-setup-ip-di-node)
+    - [2.6 Akses Sebuah Node ke Internet](#26-akses-sebuah-node-ke-internet)
+    - [2.7 Membuat Topologi Terintegrasi](#27-membuat-topologi-terintegrasi)
+      - [2.7.1 Skema Pengalamatan IP](#271-skema-pengalamatan-ip)
+      - [2.7.2 Konfigurasi Router Linux (Multi-Homed)](#272-konfigurasi-router-linux-multi-homed)
+      - [2.7.3 Mengaktifkan Kernel IP Forwarding](#273-mengaktifkan-kernel-ip-forwarding)
+      - [2.7.4 Konfigurasi Source NAT (iptables MASQUERADE)](#274-konfigurasi-source-nat-iptables-masquerade)
+      - [2.7.5 Konfigurasi Client dan DNS Resolver](#275-konfigurasi-client-dan-dns-resolver)
+      - [2.7.6 Verifikasi Konektivitas End-to-End](#276-verifikasi-konektivitas-end-to-end)
+    - [2.8 Ketentuan, Persistensi, Tips, Trik, dan Troubleshooting](#28-ketentuan-persistensi-tips-trik-dan-troubleshooting)
+  - [3. Menghubungkan Wireshark dengan GNS3](#3-menghubungkan-wireshark-dengan-gns3)
+    - [3.1 Capture Langsung dari Link Topologi](#31-capture-langsung-dari-link-topologi)
+    - [3.2 Capture di Dalam Node dengan tcpdump dan TShark](#32-capture-di-dalam-node-dengan-tcpdump-dan-tshark)
+    - [3.3 Contoh Skenario Analisis: Verifikasi SNAT dan ARP](#33-contoh-skenario-analisis-verifikasi-snat-dan-arp)
+  - [4. Latihan](#4-latihan)
+  - [5. Troubleshooting Common Pitfalls](#5-troubleshooting-common-pitfalls)
+  - [6. Referensi](#6-referensi)
 
 ---
 
@@ -260,26 +261,37 @@ Langkah-langkah:
 3. Mulai capture di Wireshark pada interface aktif, lalu akses situs HTTPS (misalnya `https://example.com`).
 4. Di Wireshark, buka **Edit -> Preferences -> Protocols -> TLS**. Pada kolom **(Pre)-Master-Secret log filename**, isi path ke file log kunci yang ditentukan tadi.
 
+   ![TLS Preferences](images/tls-preferences.png)
+
 5. Terapkan display filter `http || http2` atau `tls`. Paket yang semula bertuliskan `Application Data` kini terbuka isinya dan menampilkan request HTTP/1.1 atau HTTP/2 secara plaintext.
+
+   ![TLS Decrypted](images/tls-decrypted.png)
 
 > **Catatan keamanan:** File key log ini berisi kunci simetris sesi. Jangan pernah membagikan file ini ke orang lain dan hapus file setelah sesi praktikum selesai.
 
+Teknik ini akan dipakai kembali sebagai pembanding pada studi kasus HTTP di [bagian 1.7.3](#173-http-hypertext-transfer-protocol).
+
 ---
 
-### 1.7 Studi Kasus: Memantau Trafik FTP
+### 1.7 Studi Kasus: Analisis Protokol Jaringan
+
+Tiga studi kasus berikut menunjukkan bagaimana protokol aplikasi yang berbeda "terlihat" di Wireshark: **FTP** (kontrol multi-channel dan transfer file), **SMTP** (pengiriman email berbasis command-response), dan **HTTP** (request-response berbasis teks yang mendasari web). Ketiganya sengaja dipilih karena tidak terenkripsi secara default, sehingga seluruh proses komunikasinya bisa diamati apa adanya.
+
+#### 1.7.1 FTP (File Transfer Protocol)
 
 Protokol File Transfer Protocol (FTP) sangat cocok untuk studi analisis protokol karena seluruh autentikasi dan kontrol ditransmisikan dalam bentuk plaintext tanpa enkripsi.
 
 Sebelum menghubungkan client ke server FTP, pastikan Wireshark sudah menyala dan aktif menangkap interface yang relevan.
 
-#### 1.7.1 Arsitektur Dual-Channel FTP: Active vs Passive Mode
+**Arsitektur Dual-Channel FTP: Active vs Passive Mode**
+
 FTP menggunakan dua koneksi terpisah:
 1. **Control Connection (Port 21)**: Dipakai untuk pertukaran perintah teks (`USER`, `PASS`, `PORT`, `PASV`, `LIST`, `QUIT`).
 2. **Data Connection**: Saluran terpisah untuk mengalirkan file mentah dan daftar direktori:
    - **Active Mode**: Server menginisiasi koneksi dari port 20 ke port acak client yang ditentukan lewat instruksi `PORT`.
    - **Passive Mode (PASV)**: Client menginisiasi koneksi dari port acak dirinya ke port acak server yang ditentukan lewat instruksi `PASV`.
 
-#### 1.7.2 Menyiapkan Server (FileZilla Server)
+**Menyiapkan Server (FileZilla Server)**
 
 FileZilla Server modern menggunakan arsitektur service di background dengan antarmuka administrasi terpisah.
 
@@ -301,14 +313,13 @@ FileZilla Server modern menggunakan arsitektur service di background dengan anta
 
 5. Klik **OK** untuk menerapkan konfigurasi.
 
-#### 1.7.3 Koneksi dari Client
+**Koneksi dari Client**
 
-**Koneksi via FileZilla Client**
-Buka FileZilla Client, isi kolom *Host*, *Username*, *Password*, dan *Port 21*, lalu klik tombol **Quickconnect**.
+*Koneksi via FileZilla Client* — buka FileZilla Client, isi kolom *Host*, *Username*, *Password*, dan *Port 21*, lalu klik tombol **Quickconnect**.
 
 ![Login FileZilla](images/fz-client-connect.png)
 
-**Koneksi via Command Line (Windows / Linux CLI)**
+*Koneksi via Command Line (Windows / Linux CLI)*:
 - Di Windows: Buka Command Prompt (CMD), utility `ftp` sudah tersedia bawaan:
   ```cmd
   ftp [IP_SERVER]
@@ -327,17 +338,94 @@ Pada capture Wireshark dengan filter `ftp`, perhatikan bahwa kredensial dikirimk
 | `USER [nama]` | Mengirim username autentikasi ke FTP server |
 | `PASS [rahasia]` | Mengirim password autentikasi ke FTP server |
 
-#### 1.7.4 Upload dan Download
+**Upload dan Download**
 
-**Upload**
-Kalian dapat mendrag file ke panel remote di FileZilla Client, atau mengetik perintah `put [nama_file]` di terminal. Perintah yang dikirimkan pada control channel adalah `STOR`.
+*Upload* — drag file ke panel remote di FileZilla Client, atau ketik perintah `put [nama_file]` di terminal. Perintah yang dikirimkan pada control channel adalah `STOR`.
 
 ![STOR](images/wireshark-ftp-stor.png)
 
-**Download**
-Drag file dari remote ke local site, atau ketik perintah `get [nama_file]` di terminal. Perintah yang dikirimkan pada control channel adalah `RETR`.
+*Download* — drag file dari remote ke local site, atau ketik perintah `get [nama_file]` di terminal. Perintah yang dikirimkan pada control channel adalah `RETR`.
 
 ![RETR](images/wireshark-ftp-retr.png)
+
+#### 1.7.2 SMTP (Simple Mail Transfer Protocol)
+
+SMTP adalah protokol berbasis command-response teks (mirip FTP) yang menjadi dasar pengiriman email. Untuk praktikum ini kita tidak mengirim email ke server publik sungguhan, melainkan memakai **Mailpit** — SMTP server tiruan yang menangkap semua email masuk dan menampilkannya di web UI tanpa pernah benar-benar mengirim apa pun keluar. Mailpit adalah pengganti modern dari MailHog yang sudah tidak dikembangkan lagi.
+
+**Menjalankan Mailpit**
+
+Cara tercepat adalah lewat Docker (satu baris, tanpa instalasi tambahan):
+```bash
+docker run -d --name mailpit -p 8025:8025 -p 1025:1025 axllent/mailpit
+```
+Perintah ini menjalankan:
+- **SMTP server** di port `1025` — tempat email "dikirim".
+- **Web UI** di `http://localhost:8025` — tempat melihat email yang masuk.
+
+Alternatif tanpa Docker: unduh binary tunggal dari [halaman rilis Mailpit di GitHub](https://github.com/axllent/mailpit/releases), atau `brew install mailpit` di macOS.
+
+**Mengirim Email Uji Coba**
+
+Karena Mailpit hanya *menerima* email, kita perlu cara untuk mengirimnya. Skrip Python singkat berikut memakai modul `smtplib` bawaan (tidak perlu instalasi tambahan):
+
+```python
+import smtplib
+from email.mime.text import MIMEText
+
+msg = MIMEText("Ini isi email uji coba untuk diamati di Wireshark.")
+msg["Subject"] = "Uji Coba SMTP"
+msg["From"] = "pengirim@lab.local"
+msg["To"] = "penerima@lab.local"
+
+with smtplib.SMTP("localhost", 1025) as server:
+    server.send_message(msg)
+```
+
+Jalankan Wireshark dengan filter `smtp` **sebelum** menjalankan skrip di atas, lalu amati pertukaran perintahnya:
+
+![SMTP Capture](images/wireshark-smtp-capture.png)
+
+| Perintah SMTP | Keterangan |
+| :--- | :--- |
+| `EHLO` / `HELO` | Client memperkenalkan diri ke server |
+| `MAIL FROM:` | Menentukan alamat pengirim |
+| `RCPT TO:` | Menentukan alamat penerima |
+| `DATA` | Memulai pengiriman header dan isi email, diakhiri baris berisi titik tunggal (`.`) |
+| `QUIT` | Mengakhiri sesi |
+
+Karena Mailpit tidak mewajibkan autentikasi secara default, seluruh transaksi ini bisa diamati tanpa langkah `AUTH LOGIN` tambahan — cocok untuk fokus ke mekanisme dasar protokolnya dulu. Buka `http://localhost:8025` di browser untuk memastikan email tadi benar-benar "diterima" oleh Mailpit:
+
+![Mailpit Web UI](images/mailpit-webui.png)
+
+#### 1.7.3 HTTP (Hypertext Transfer Protocol)
+
+HTTP adalah protokol request-response yang mendasari web. Untuk mengamatinya tanpa bergantung pada situs eksternal, kita bisa menjalankan server HTTP lokal memakai modul bawaan Python (tidak perlu instalasi tambahan):
+
+```bash
+python3 -m http.server 8080
+```
+
+Perintah ini menjalankan server HTTP sederhana di `http://localhost:8080` yang menyajikan isi folder tempat perintah dijalankan.
+
+Jalankan Wireshark dengan filter `http`, lalu akses server tersebut lewat browser atau `curl`:
+```bash
+curl http://localhost:8080/
+```
+
+Amati struktur request dan response-nya di Wireshark:
+
+![HTTP Capture](images/wireshark-http-capture.png)
+
+- **Request line**: `GET / HTTP/1.1` — metode, path yang diminta, dan versi protokol.
+- **Request headers**: `Host`, `User-Agent`, `Accept`, dsb.
+- **Status line** pada response: `HTTP/1.1 200 OK`.
+- **Response headers**: `Server`, `Content-Type`, `Content-Length`, dsb, diikuti isi (body) halaman.
+
+Klik kanan pada salah satu paket HTTP lalu pilih **Follow -> HTTP Stream** (lihat [bagian 1.4.2](#142-follow-stream-tcp-udp-http)) untuk melihat keseluruhan request dan response sebagai satu blok teks yang mudah dibaca:
+
+![HTTP Follow Stream](images/wireshark-http-follow-stream.png)
+
+> **Bandingkan dengan HTTPS:** Karena trafik di atas dikirim tanpa enkripsi, seluruh header dan body terlihat apa adanya. Ulangi eksperimen serupa terhadap situs HTTPS sambil mengaktifkan teknik dekripsi `SSLKEYLOGFILE` pada [bagian 1.6](#16-menangkap-dan-mendekripsi-trafik-httpstls) untuk melihat bahwa strukturnya sebenarnya sama — hanya dibungkus lapisan enkripsi TLS.
 
 ---
 
@@ -369,35 +457,85 @@ Address Resolution Protocol (ARP) memetakan IP logis ke MAC address fisik:
 
 **GNS3 (Graphical Network Simulator-3)** adalah perangkat lunak simulator jaringan berbasis visual yang mendukung emulasi perangkat nyata mulai dari router Cisco, MikroTik, hingga container Linux berbasis Docker.
 
+![gns3.com](images/image-baru/awalan.png)
+
 GNS3 menggunakan model terdistribusi:
-- **GNS3 Desktop Client**: Antarmuka pengguna grafis tempat merancang diagram topologi dan memanggil konsol terminal.
+- **GNS3 Desktop Client / WebClient**: Antarmuka pengguna (aplikasi desktop atau langsung lewat browser) tempat merancang diagram topologi dan memanggil konsol terminal.
 - **GNS3 VM (Server / Controller)**: Mesin virtual Linux yang menjalankan komputasi emulasi berat, bridging interface virtual (`ubridge`), dan engine Docker di lingkungan kernel terisolasi dengan akselerasi KVM.
+
+Pada praktikum ini, controller sudah disediakan bersama per kelompok (lihat [bagian 2.4](#24-instalasi-dan-setup-gns3-client)), jadi sebagian besar dari kalian hanya perlu memasang client/webclient dan terhubung ke controller tersebut — bukan menjalankan GNS3 VM sendiri.
 
 ---
 
-### 2.2 Instalasi GNS3 VM
+### 2.2 Instalasi GNS3
 
-Unduh paket **GNS3 VM** resmi yang cocok dengan versi GNS3 Client dari [gns3.com/software/download-vm](https://www.gns3.com/software/download-vm).
+GNS3 3.0.6 dibagikan sebagai satu **installer all-in-one** yang mencakup GNS3 Desktop Client, GNS3 WebClient, Wireshark, dan (opsional) GNS3 VM sekaligus — tidak perlu lagi mengunduh komponen-komponen ini secara terpisah seperti versi lama.
+
+1. Buka [github.com/GNS3/gns3-gui/releases](https://github.com/GNS3/gns3-gui/releases), cari rilis stabil terbaru (**Version 3.0.6** saat modul ini ditulis — GNS3 merilis versi baru cukup sering, jadi selalu cek yang paling atas di daftar rilis).
+
+   ![version](images/image-baru/SetupGNS/version.png)
+
+2. Pada bagian **Assets**, pilih file sesuai kebutuhan:
+   - **Windows**: `GNS3-3.0.6-all-in-one.exe` — **direkomendasikan**, mencakup semua komponen dalam satu wizard.
+   - **macOS**: `GNS3-3.0.6.dmg`.
+   - File `GNS3.VM.*.zip` (VirtualBox, VMware Workstation, VMware ESXi, Hyper-V, KVM) adalah VM standalone — hanya diperlukan bila kalian **tidak** memakai jalur all-in-one, atau ingin mengunduh ulang VM-nya secara terpisah.
+
+   ![assets](images/image-baru/SetupGNS/Installation.png)
+
+3. Jalankan installer, klik **Next** pada layar sambutan.
+
+   ![wizard](images/image-baru/SetupGNS/wizard.png)
+
+4. Setujui **License Agreement** (GPLv3).
+
+   ![license](images/image-baru/SetupGNS/LA.png)
+
+5. Pada layar **Choose Components**, pilih tipe install **Custom** agar bisa memilih komponen satu per satu:
+   - **GNS3 Desktop** — aplikasi client utama.
+   - **GNS3 WebClient** — akses lewat browser tanpa perlu membuka aplikasi desktop.
+   - **GNS3 VM** — centang **hanya jika** kalian ingin menjalankan server/controller sendiri di komputer ini (lihat bagian opsional di bawah). Untuk praktikum yang controllernya sudah disediakan asisten, bagian ini **boleh dikosongkan**.
+   - **Tools**: Wireshark (versi yang dibundel saat ini: 4.6.3) dan TightVNC Viewer — sebaiknya tetap dicentang.
+
+   ![choose components](images/image-baru/SetupGNS/InstalasiGNSnya.png)
+
+6. **Jika mencentang GNS3 VM**, wizard akan meminta jenis virtualisasi yang dipakai: VMware Workstation, VMware ESXi, VirtualBox, atau Hyper-V. Pilih salah satu lalu klik **Install** — installer akan mengunduh `VM.zip` yang sesuai ke folder Downloads kalian secara otomatis. File ini masih perlu di-*extract* dan di-*import* manual ke aplikasi virtualisasi pilihan kalian (langkah lengkapnya ada di bagian opsional "Menyiapkan GNS3 VM Sendiri" di bawah).
+
+   ![pilih VM](images/image-baru/SetupGNS/kaloinstallVM.png)
+
+7. Pilih folder Start Menu, lalu klik **Next** hingga instalasi selesai.
+
+   ![start menu](images/image-baru/SetupGNS/startmenu.png)
+
+8. Klik **Finish**. Centang **Start GNS3** untuk langsung membuka aplikasinya.
+
+   ![finish](images/image-baru/SetupGNS/finish.png)
+
+> **macOS**: Alur instalasi serupa lewat file `.dmg`. Video referensi setup GNS3 di macOS: [youtube.com/watch?v=7Hui9aDqX50](https://www.youtube.com/watch?v=7Hui9aDqX50).
+>
+> **iOS/iPadOS**: GNS3 juga menyediakan client resmi di App Store bagi yang ingin mengakses controller dari perangkat mobile.
+
+Bagian di bawah ini (Opsi A dan Opsi B) hanya perlu diikuti jika kalian mencentang **GNS3 VM** pada langkah 5 di atas dan ingin meng-*host* controller sendiri. Jika kalian memakai controller bersama yang sudah disediakan asisten, langsung lanjut ke [bagian 2.4](#24-instalasi-dan-setup-gns3-client).
 
 #### Opsi A: VirtualBox
 
-1. Unduh dan install [VirtualBox](https://www.virtualbox.org/) versi terbaru.
-2. Unduh image GNS3 VM untuk VirtualBox dan ekstrak file `.zip` hingga memperoleh file `.ova`.
-3. Buka VirtualBox, pilih **File -> Import Appliance**, arahkan ke file `.ova`.
+1. Pastikan [VirtualBox](https://www.virtualbox.org/) sudah terpasang (atau instal versi terbaru jika belum).
+2. Ekstrak `VM.zip` yang terunduh tadi hingga memperoleh file `.ova`. Di VirtualBox, klik **Import** pada toolbar, arahkan ke file `.ova` tersebut.
 
-   ![import-ova](images/vb-import-ova.png)
+   ![import](images/image-baru/VMVbox/setupnetworkimport.png)
 
-4. Buat host network adapter baru: **File -> Tools -> Network Manager -> Host-only Networks -> Create**. Atur IPv4 Address ke `192.168.56.1` dan Netmask `255.255.255.0`.
+3. Buat host network adapter baru: **File -> Tools -> Network Manager -> Host-only Networks -> Create**. Atur IPv4 Address ke `192.168.56.1` dan Netmask `255.255.255.0`.
 
-   ![host-network-adapter](images/vb-host-network-adapter.png)
+   ![host-network-adapter](images/image-baru/VMVbox/setupipnetwork.png)
 
-5. Pada VM GNS3, buka **Settings -> Network**:
-   - Adapter 1: Pilih **Host-only Adapter** (arahkan ke adapter yang baru dibuat).
+   > **Perhatikan nama adapternya, bukan hanya urutannya.** VirtualBox/Windows kadang menukar mana yang bernama "VirtualBox Host-Only Ethernet Adapter" polos dan mana yang "#2" setelah adapter di-disable/enable ulang. Yang harus dicocokkan adalah **angka IP-nya** (`192.168.56.x`), bukan nama adapternya.
+
+4. Pada VM GNS3, buka **Settings -> Network** (mode Expert):
+   - Adapter 1: **Attached to** = **Host-only Adapter**, **Name** = adapter yang IP-nya `192.168.56.x` (lihat catatan di atas).
    - Adapter 2: Pilih **NAT**.
 
-   ![settings-network-vm](images/vb-settings-network.png)
+   ![settings-network-vm](images/image-baru/VMVbox/setupadapter.png)
 
-6. Jalankan VM. Layar konsol VM akan menampilkan alamat IP Web-UI, misalnya `http://192.168.56.101:3080`.
+5. Jalankan VM. Layar konsol VM akan menampilkan alamat IP Web-UI, misalnya `http://192.168.56.101`.
 
    ![vm-running](images/vb-vm-running.png)
 
@@ -406,7 +544,7 @@ Unduh paket **GNS3 VM** resmi yang cocok dengan versi GNS3 Client dari [gns3.com
 VMware Workstation Pro kini **gratis untuk penggunaan personal dan edukasi**. Cukup mendaftar akun di Broadcom Support Portal tanpa memerlukan license key berbayar.
 
 1. Unduh installer VMware Workstation Pro dari portal Broadcom dan pilih opsi *Personal Use*.
-2. Unduh **GNS3 VM for VMware Workstation** dari situs GNS3, lalu ekstrak arsipnya.
+2. Ekstrak `VM.zip` (VMware Workstation) yang terunduh dari installer all-in-one tadi.
 3. Di VMware: **File -> Open**, pilih file OVA/OVF, lalu beri nama VM.
 
    ![import-ova-vmware](images/vmw-import-ova.png)
@@ -434,27 +572,48 @@ Jika muncul pesan error virtualisasi tidak didukung:
 
 ### 2.3 Memasukkan Image Node ke GNS3
 
-1. Pada GNS3 Client, buka menu **Edit -> Preferences -> Docker -> Docker containers**, lalu klik **New**.
+Ada dua jalur untuk mengatur template node: lewat GNS3 Desktop Client, atau langsung lewat browser (WebClient). Bagian ini biasanya dikerjakan oleh yang mengelola controller — kalau kalian memakai controller bersama yang templatenya sudah disiapkan asisten, boleh langsung lanjut ke [bagian 2.4](#24-instalasi-dan-setup-gns3-client) dan gunakan langsung template yang sudah ada.
 
-   ![insert-image-menu](images/gns3-docker-template-menu.png)
+**Lewat GNS3 Desktop Client**
 
-2. Pada pilihan Server type, pilih **Run this Docker container on the GNS3 VM**.
-3. Pilih opsi **New image** dan masukkan nama image:
-   - Rekomendasi standar: `gns3/ipterm` (berbasis Debian, sudah terpasang utility jaringan lengkap seperti `iproute2`, `ping`, `curl`, `traceroute`, `nano`).
-   - Alternatif: `nevarre/gns3-debi:latest`.
-4. Beri nama container: `Debian-Node`.
-5. Tentukan jumlah **Network adapters** sesuai kebutuhan topologi (isi **4** untuk node router agar memiliki interface eth0 hingga eth3).
-6. Biarkan bagian lain sesuai default, lalu klik **Finish** dan **Apply**.
+1. Buka **Edit -> Preferences** (`Ctrl+Shift+P`).
 
-   ![docker-template-config](images/gns3-docker-template-config.png)
+   ![preferences](images/image-baru/SetupImage/preferences.png)
 
-7. Uji template: buat project baru (**File -> New blank project**), buka panel perangkat, tarik node baru ke workspace lembar kerja.
+2. Di panel kiri, pilih **Docker -> Docker containers**. Template yang sudah ada akan terdaftar di sini.
+
+   ![pilih docker](images/image-baru/SetupImage/pilihdocker.png)
+
+3. Klik **New** untuk membuat template baru, atau pilih salah satu template lalu lihat/ubah detailnya: nama template, nama image Docker, compute (server/VM tempat container dijalankan), jumlah network adapters, dan tipe konsol.
+
+   ![apply image](images/image-baru/SetupImage/applyimage.png)
+
+4. Isi nama image Docker sesuai rekomendasi praktikum:
+   - `ardhptr21/alpinet:latest` (berbasis Alpine, ringan)
+   - `ardhptr21/debinet:latest` (berbasis Debian, lebih lengkap)
+   - Alternatif image resmi dari tim GNS3 (kalau image di atas sudah tidak ter-*maintain*): [`gns3/ipterm`](https://hub.docker.com/r/gns3/ipterm) — sudah terpasang `iproute2`, `ping`, `curl`, `traceroute`, `nano`.
+5. Tentukan jumlah **Network adapters** sesuai kebutuhan topologi (isi **4** untuk node yang akan dipakai sebagai router agar memiliki interface eth0 hingga eth3).
+6. Klik **Apply** lalu **OK**.
+
+**Lewat GNS3 WebClient (browser)**
+
+1. Buka menu hamburger (≡) di kiri atas, pilih **Template preferences** untuk melihat/mengedit template yang ada, atau **New template** untuk membuat baru.
+
+   ![image di web](images/image-baru/SetupImage/imagediweb.png)
+
+2. Ikuti wizard: pilih tipe **Docker**, isi nama image serta jumlah adapter pada panel **General settings / Advanced / Usage**, lalu klik **Save**.
+
+   ![save image](images/image-baru/SetupImage/saveimage.png)
+
+**Menguji Template**
+
+1. Buat project baru (**File -> New blank project** di Desktop, atau **Add blank project** di WebClient — lihat [bagian 2.4](#24-instalasi-dan-setup-gns3-client)), lalu tarik node baru ke workspace.
 
    ![test-node](images/gns3-test-node.png)
 
-8. Klik kanan node lalu pilih **Start**. Akses konsol melalui **Web console** atau terminal lokal via Telnet:
+2. Klik kanan node lalu pilih **Start**. Akses konsol melalui **Web console**, atau terminal lokal via Telnet:
    ```bash
-   telnet [IP_GNS3_VM] [Port_Node]
+   telnet [IP_CONTROLLER] [Port_Node]
    ```
    Untuk keluar dari sesi Telnet, tekan shortcut `Ctrl + ]` lalu ketik `quit`.
 
@@ -464,16 +623,41 @@ Jika muncul pesan error virtualisasi tidak didukung:
 
 ### 2.4 Instalasi dan Setup GNS3 Client
 
-1. Unduh GNS3 Client all-in-one installer dari [gns3.com/software/download](https://www.gns3.com/software/download).
-2. Jalankan installer dan pilih komponen yang dibutuhkan (GNS3 Desktop dan Wireshark).
+Setelah GNS3 Desktop terpasang (lihat [bagian 2.2](#22-instalasi-gns3)), client perlu dihubungkan ke sebuah controller — baik controller bersama yang disediakan asisten, maupun GNS3 VM milik sendiri.
 
-   ![client-install](images/gns3-client-install.png)
+1. Buka GNS3 Desktop, dari menu **Help -> Setup Wizard**.
 
-3. Saat pertama kali dibuka, jendela Setup Wizard akan muncul. Pilih **Run appliances on a virtual machine** atau **Run appliances on a remote server**, lalu masukkan IP dan port controller GNS3 VM kalian.
+   ![buka wizard](images/image-baru/SetupGNSClient/bukasetupwizard.png)
 
-   ![client-setup](images/gns3-client-setup.png)
+2. Pada langkah **Controller**, pilih **Connect to a remote controller** (opsi "Start and connect to a local controller" hanya tersedia di Linux), lalu klik **Next**.
 
-> **Catatan keamanan:** Secara default koneksi client ke controller menggunakan HTTP port 3080. Untuk lab jaringan yang digunakan bersama, disarankan mengaktifkan enkripsi HTTPS pada pengaturan server GNS3.
+   ![connect to remote](images/image-baru/SetupGNSClient/connecttoremote.png)
+
+3. Isi form **Remote controller**:
+   - **Protocol**: `HTTP`
+   - **Host**: alamat IP controller sesuai kelompok kalian (lihat tabel di bawah)
+   - **Port**: `80`
+   - **Username** & **Password**: kredensial GNS3 yang diberikan asisten
+
+   ![isi kredensial](images/image-baru/SetupGNSClient/Installation.png)
+
+   | Kelompok | Host (IP Controller) |
+   | :--- | :--- |
+   | Group A | `10.4.89.246` |
+   | Group B | `10.4.89.247` |
+   | Group C | `10.4.89.250` |
+
+4. Klik **Next** hingga selesai. Jika berhasil, panel **Servers Summary** di kanan bawah akan menampilkan controller dengan indikator hijau (terhubung).
+
+> **Alternatif tanpa install client:** Karena GNS3 3.x berbasis web, kalian juga bisa langsung membuka alamat controller (`http://[Host]`) di browser tanpa perlu meng-install GNS3 Desktop sama sekali — cukup pastikan **GNS3 WebClient** tercentang saat instalasi (lihat [bagian 2.2](#22-instalasi-gns3)), atau akses langsung dari browser mana pun yang berada di jaringan yang sama.
+>
+> ![WebUI](images/image-baru/WebUI/WebUI.png)
+>
+> Klik **Add blank project** untuk mulai membuat topologi:
+>
+> ![buat project](images/image-baru/WebUI/buatproject.png)
+
+> **Catatan keamanan:** Secara default koneksi client ke controller menggunakan HTTP polos di port 80 — artinya kredensial yang dimasukkan bisa disadap dengan Wireshark, persis seperti kredensial FTP di [bagian 1.7.1](#171-ftp-file-transfer-protocol). Untuk lab yang dipakai bersama di jaringan yang tidak sepenuhnya terpercaya, aktifkan **HTTPS** pada pengaturan server GNS3.
 
 ---
 
@@ -677,7 +861,7 @@ Hentikan capture dengan `Ctrl + C`. File `.pcap` dapat dibaca kembali di termina
 
 | Masalah | Penyebab Utama | Solusi |
 | :--- | :--- | :--- |
-| **Server GNS3 VM berwarna abu-abu / Disconnected** | Perubahan alamat IP adapter atau pemblokiran firewall | Cek IP pada konsol VM dan sesuaikan di Preferences GNS3 Client. Izinkan port 3080 pada firewall. |
+| **Server GNS3 VM berwarna abu-abu / Disconnected** | Perubahan alamat IP adapter atau pemblokiran firewall | Cek IP pada konsol VM dan sesuaikan di Preferences GNS3 Client. Izinkan port 80 (atau port HTTPS yang dipakai) pada firewall. |
 | **Client gagal ping ke gateway router** | Kesalahan penulisan netmask atau interface tertukar | Jalankan `ip a` di router dan client untuk memastikan interface fisik sesuai dengan konfigurasi file `/etc/network/interfaces`. |
 | **Client bisa ping gateway tapi gagal ping ke 8.8.8.8** | IP forwarding belum aktif di kernel atau rule iptables belum disetel | Jalankan `sysctl -w net.ipv4.ip_forward=1` di router dan pasang rule `iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE`. |
 | **Bisa ping IP publik tapi gagal ping nama domain** | File resolver DNS belum dikonfigurasi | Tambahkan DNS server ke `/etc/resolv.conf` client dengan perintah `echo "nameserver 8.8.8.8" > /etc/resolv.conf`. |
@@ -692,7 +876,12 @@ Hentikan capture dengan `Ctrl + C`. File `.pcap` dapat dibaca kembali di termina
 - [Wireshark Display Filter Reference](https://www.wireshark.org/docs/wsug_html_chunked/ChWorkBuildDisplayFilterSection.html)
 - [Wireshark TLS Decryption Wiki](https://wiki.wireshark.org/TLS)
 - [Dokumentasi Inti GNS3](https://docs.gns3.com/)
+- [Halaman Rilis GNS3 (GitHub)](https://github.com/GNS3/gns3-gui/releases)
+- [Video Setup GNS3 di macOS](https://www.youtube.com/watch?v=7Hui9aDqX50)
 - [Broadcom Support Portal untuk Unduhan VMware Workstation Pro](https://knowledge.broadcom.com/external/article/368667/download-and-license-vmware-desktop-hype.html)
+- [Mailpit — SMTP Testing Tool](https://github.com/axllent/mailpit)
+- [RFC 5321: Simple Mail Transfer Protocol](https://datatracker.ietf.org/doc/html/rfc5321)
+- [RFC 2616 / RFC 9110: Hypertext Transfer Protocol](https://datatracker.ietf.org/doc/html/rfc9110)
 - [RFC 792: Internet Control Message Protocol](https://datatracker.ietf.org/doc/html/rfc792)
 - [RFC 793: Transmission Control Protocol](https://datatracker.ietf.org/doc/html/rfc793)
 - [RFC 959: File Transfer Protocol](https://datatracker.ietf.org/doc/html/rfc959)
