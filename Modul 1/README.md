@@ -42,7 +42,7 @@
       - [2.7.4 Konfigurasi Source NAT (iptables MASQUERADE)](#274-konfigurasi-source-nat-iptables-masquerade)
       - [2.7.5 Konfigurasi Client dan DNS Resolver](#275-konfigurasi-client-dan-dns-resolver)
       - [2.7.6 Verifikasi Konektivitas End-to-End](#276-verifikasi-konektivitas-end-to-end)
-    - [2.8 Ketentuan, Persistensi, Tips, Trik, dan Troubleshooting](#28-ketentuan-persistensi-tips-trik-dan-troubleshooting)
+    - [2.8 Tips, Trik, dan Troubleshooting](#28-tips-trik-dan-troubleshooting)
   - [3. Menghubungkan Wireshark dengan GNS3](#3-menghubungkan-wireshark-dengan-gns3)
     - [3.1 Capture Langsung dari Link Topologi](#31-capture-langsung-dari-link-topologi)
     - [3.2 Capture di Dalam Node dengan tcpdump dan TShark](#32-capture-di-dalam-node-dengan-tcpdump-dan-tshark)
@@ -406,8 +406,9 @@ Karena Mailpit tidak mewajibkan autentikasi secara default, seluruh transaksi in
 HTTP adalah protokol request-response yang mendasari web. Untuk mengamatinya tanpa bergantung pada situs eksternal, kita bisa menjalankan server HTTP lokal memakai modul bawaan Python (tidak perlu instalasi tambahan):
 
 ``` 
-python3 -m http.server 8080
+python3 -m http.server 8080 / python -m http.server 8080
 ```
+![dirlisthttp](images\image-baru\Wireshark\dirlist.png)
 
 Perintah ini menjalankan server HTTP sederhana di `http://localhost:8080` yang menyajikan isi folder tempat perintah dijalankan.
 
@@ -418,7 +419,7 @@ curl http://localhost:8080/
 
 Amati struktur request dan response-nya di Wireshark:
 
-![HTTP Capture](images/wireshark-http-capture.png)
+![HTTP Capture](images\image-baru\Wireshark\traffichttp.png)
 
 - **Request line**: `GET / HTTP/1.1` — metode, path yang diminta, dan versi protokol.
 - **Request headers**: `Host`, `User-Agent`, `Accept`, dsb.
@@ -427,7 +428,7 @@ Amati struktur request dan response-nya di Wireshark:
 
 Klik kanan pada salah satu paket HTTP lalu pilih **Follow -> HTTP Stream** (lihat [bagian 1.4.2](#142-follow-stream-tcp-udp-http)) untuk melihat keseluruhan request dan response sebagai satu blok teks yang mudah dibaca:
 
-![HTTP Follow Stream](images/wireshark-http-follow-stream.png)
+![HTTP Follow Stream](images\image-baru\Wireshark\httpstream.png)
 
 > **Bandingkan dengan HTTPS:** Karena trafik di atas dikirim tanpa enkripsi, seluruh header dan body terlihat apa adanya. Ulangi eksperimen serupa terhadap situs HTTPS sambil mengaktifkan teknik dekripsi `SSLKEYLOGFILE` pada [bagian 1.6](#16-menangkap-dan-mendekripsi-trafik-httpstls) untuk melihat bahwa strukturnya sebenarnya sama — hanya dibungkus lapisan enkripsi TLS.
 
@@ -674,10 +675,12 @@ Setelah GNS3 Desktop terpasang (lihat [bagian 2.2](#22-instalasi-gns3)), client 
 1. Pastikan node dalam kondisi berhenti (*Stop*). Klik kanan pada node, pilih **Configure**.
 2. Pada tab **General settings**, klik tombol **Edit network configuration**.
 
-   ![setup-ip](images/gns3-setup-ip.png)
+   ![setup-ip](images\image-baru\setupnode\node.png)
 
 3. File konfigurasi `/etc/network/interfaces` akan terbuka untuk mengatur konfigurasi IP statis atau dinamis pada interface yang digunakan.
 
+   ![setup-ip](images\image-baru\setupnode\networkconf.png)
+   
 ---
 
 ### 2.6 Akses Sebuah Node ke Internet
@@ -691,12 +694,16 @@ Setelah GNS3 Desktop terpasang (lihat [bagian 2.2](#22-instalasi-gns3)), client 
    ```
    auto eth0
    iface eth0 inet dhcp
+      # up sysctl -w net.ipv4.ip_forward=1    
+      # up iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE    <-- lihat kebawah kenapa butuh 2 ini
    ```
+   ![internet-access-test](images\image-baru\setupnode\aksesinternet.png)
+   
 4. Jalankan node, buka konsol, lalu uji koneksi dengan perintah `ping -c 3 google.com` atau `ping -c 3 8.8.8.8`.
 
-   ![internet-access-test](images/gns3-internet-test.png)
+   ![internet-access-test](images\image-baru\setupnode\adainternet.png)
 
-5. Ubah nama node menjadi `Router1` melalui klik kanan -> **Change hostname**, dan ubah simbolnya menjadi router melalui klik kanan -> **Change symbol**. Node ini siap digunakan sebagai router pada topologi berikutnya.
+5. Ubah nama node menjadi `Router1` melalui klik kanan -> **Change hostname** atau dari panel `configure`, dan ubah simbolnya menjadi router melalui klik kanan -> **Change symbol** (Terserah kalian, tapi lebih rapih diganti.). Node ini siap digunakan sebagai router pada topologi berikutnya.
 
 ---
 
@@ -704,7 +711,7 @@ Setelah GNS3 Desktop terpasang (lihat [bagian 2.2](#22-instalasi-gns3)), client 
 
 Tambahkan node **Ethernet switch** dan beberapa node Linux, hubungkan menggunakan kabel, dan beri nama setiap perangkat:
 
-![topologi-contoh](images/gns3-topologi-contoh.png)
+![topologi-contoh](images\image-baru\setupnode\topologi.png)
 
 #### 2.7.1 Skema Pengalamatan IP
 
@@ -714,10 +721,12 @@ Tambahkan node **Ethernet switch** dan beberapa node Linux, hubungkan menggunaka
 | | `eth1` | Static | `10.10.1.1` | `255.255.255.0` | None | Gateway LAN 1 |
 | | `eth2` | Static | `10.10.2.1` | `255.255.255.0` | None | Gateway LAN 2 |
 | **Client1** | `eth0` | Static | `10.10.1.2` | `255.255.255.0` | `10.10.1.1` | Host di Subnet 1 |
-| **Client2** | `eth0` | Static | `10.10.2.2` | `255.255.255.0` | `10.10.2.1` | Host di Subnet 2 |
+| **Client2** | `eth0` | Static | `10.10.1.3` | `255.255.255.0` | `10.10.1.1` | Host di Subnet 1 |
+| **Client3** | `eth0` | Static | `10.10.2.2` | `255.255.255.0` | `10.10.2.1` | Host di Subnet 2 |
+| **Client4** | `eth0` | Static | `10.10.2.3` | `255.255.255.0` | `10.10.2.1` | Host di Subnet 2 |
 
 #### 2.7.2 Konfigurasi Router Linux (Multi-Homed)
-Buka konfigurasi jaringan pada **Router1**:
+Buka konfigurasi jaringan pada **Router**:
 ```
 auto eth0
 iface eth0 inet dhcp
@@ -733,7 +742,8 @@ iface eth2 inet static
     netmask 255.255.255.0
 ```
 
-Konfigurasi pada **Client1** di belakang LAN 1:
+<u>Konfigurasi pada **Switch 1**:</u>
+- **Client1**
 ```
 auto eth0
 iface eth0 inet static
@@ -741,12 +751,28 @@ iface eth0 inet static
     netmask 255.255.255.0
     gateway 10.10.1.1
 ```
-
-Konfigurasi pada **Client2** di belakang LAN 2:
+- **Client2**
+```
+auto eth0
+iface eth0 inet static
+    address 10.10.1.3     # Perhatikan angkanya.
+    netmask 255.255.255.0
+    gateway 10.10.1.1
+```
+<u>Konfigurasi pada **Switch 2**:</u>
+- **Client1**
 ```
 auto eth0
 iface eth0 inet static
     address 10.10.2.2
+    netmask 255.255.255.0
+    gateway 10.10.2.1
+```
+- **Client1**
+```
+auto eth0
+iface eth0 inet static
+    address 10.10.2.3
     netmask 255.255.255.0
     gateway 10.10.2.1
 ```
@@ -785,22 +811,30 @@ echo "nameserver 8.8.8.8" > /etc/resolv.conf
 
 #### 2.7.6 Verifikasi Konektivitas End-to-End
 1. Cek konfigurasi IP pada setiap node dengan perintah `ip a`:
-
-   ![cek-ip](images/gns3-cek-ip.png)
-
 2. Uji ping dari Client1 ke gateway: `ping -c 2 10.10.1.1`.
+
+   ![cihuy](images\image-baru\setupnode\clientgateaway.png)
+
 3. Uji routing antar-subnet dari Client1 ke Client2: `ping -c 2 10.10.2.2`.
+
+   ![woilah](images\image-baru\setupnode\antarsubnet.png)
+
 4. Uji akses internet publik dari Client1 dan Client2: `ping -c 2 8.8.8.8` dan `ping -c 2 google.com`.
 
-   ![topologi-internet](images/gns3-topologi-internet.png)
+   ![yeehaw](images\image-baru\setupnode\internet.png)
 
 ---
 
-### 2.8 Ketentuan, Persistensi, Tips, Trik, dan Troubleshooting
+### 2.8 Tips, Trik, dan Troubleshooting
 
-- File dan aplikasi yang diinstal di dalam root filesystem container Docker bersifat **ephemeral** (hilang saat node dihapus). Hanya direktori `/root` yang dipertahankan secara persisten oleh image seperti `gns3/ipterm`.
-- Simpan seluruh skrip otomasi konfigurasi penting ke dalam folder `/root`.
-- Perintah yang ingin dijalankan otomatis setiap kali membuka konsol dapat dimasukkan ke bagian bawah file `/root/. rc`.
+- File dan aplikasi yang diinstal di dalam root filesystem container Docker bersifat **ephemeral** (hilang saat node dihapus). Hanya direktori `/root` yang dipertahankan secara persisten oleh image seperti `gns3/ipterm` sehingga direkomendasikan menyimpan seluruh skrip otomasi konfigurasi penting ke dalam folder `/root`.
+- Perintah yang ingin dijalankan otomatis setiap kali membuka konsol dapat dimasukkan ke bagian bawah file `/root/.bashrc` biasanya terkait:
+   ```
+   apt update && apt install -y iptables
+   iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE -s 192.216.0.0/16
+   echo "nameserver 192.168.122.1" > /etc/resolv.conf
+   ```
+   > seperti yang telah dikonfigurasikan diatas.
 - Perintah startup jaringan juga dapat dimasukkan langsung ke file `/etc/network/interfaces` menggunakan baris awalan `up`:
   ```
   auto eth0
@@ -824,6 +858,8 @@ GNS3 memungkinkan penyadapan link virtual secara real-time langsung ke Wireshark
 2. Centang opsi **Start the capture visualization program**, lalu klik **OK**. Wireshark akan terbuka otomatis menampilkan lalu lintas data yang melintasi link tersebut secara langsung.
 
 3. Untuk menghentikan proses sadap, klik kanan kabel yang sama lalu pilih **Stop capture**. Simpan data melalui **File -> Save** di Wireshark jika diperlukan.
+
+> Pastikan `Preferences` network capture kalian terhubung dengan wireshark kalian --> lihat di edit -> Preferences -> Packet Capture
 
 ---
 
