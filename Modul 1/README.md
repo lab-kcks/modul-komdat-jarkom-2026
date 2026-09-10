@@ -88,8 +88,8 @@ Sebuah paket jaringan terbentuk melalui proses enkapsulasi berlapis:
 
 ### 1.2 Instalasi
 
-**Windows**
-Unduh installer resmi dari [wireshark.org/download.html](https://www.wireshark.org/download.html). Installer Windows sudah menyertakan **Npcap** sebagai driver capture pengganti WinPcap yang sudah usang. Pastikan mencentang opsi instalasi Npcap dalam mode kompatibel WinPcap API.
+**Windows dan macOS**
+Unduh installer resmi dari [wireshark.org/download.html](https://www.wireshark.org/download.html). Installer Windows dan macOS sudah menyertakan **Npcap** sebagai driver capture pengganti WinPcap yang sudah usang. Pastikan mencentang opsi instalasi Npcap dalam mode kompatibel WinPcap API.
 
 **Linux (Debian / Ubuntu / Kali)**
 Install lewat package manager:
@@ -356,10 +356,10 @@ SMTP adalah protokol berbasis command-response teks (mirip FTP) yang menjadi das
 
 Cara tercepat adalah lewat Docker (satu baris, tanpa instalasi tambahan):
 ``` 
-docker run -d --name mailpit -p 8025:8025 -p 1025:1025 axllent/mailpit
+docker run -d --name mailpit -p 25:1025 -p 8025:8025 axllent/mailpit
 ```
 Perintah ini menjalankan:
-- **SMTP server** di port `1025` — tempat email "dikirim".
+- **SMTP server** di port `25` — tempat email "dikirim".
 - **Web UI** di `http://localhost:8025` — tempat melihat email yang masuk.
 
 Alternatif tanpa Docker: unduh binary tunggal dari [halaman rilis Mailpit di GitHub](https://github.com/axllent/mailpit/releases), atau `brew install mailpit` di macOS.
@@ -377,13 +377,17 @@ msg["Subject"] = "whnyh"
 msg["From"] = "pengirim@lab.local"
 msg["To"] = "penerima@lab.local"
 
-with smtplib.SMTP("localhost", 1025) as server:
+with smtplib.SMTP("127.0.0.1", 25) as server:
     server.send_message(msg)
 ```
 
-Jalankan Wireshark dengan filter `smtp` **sebelum** menjalankan skrip di atas, lalu amati pertukaran perintahnya:
+> Disini, karena ribet kalau live capture dengan docker mailpit, kita capture tcpdump-nya terlebih dlu lalu analisis dari hasil .pcap capture tcpdumpnya. Dengan itu, kalo mau coba, di exec docker mailpit `apk add --no-cache tcpdump`, run script py sederhana, lalu capture `tcpdump -i eth0 port 1025 -w /tmp/cobasmtp.pcap` dan ambil file .pcap nya di file container mailpit.
 
-![SMTP Capture](images/wireshark-smtp-capture.png)
+Jalankan Wireshark dengan filter `smtp` (karena port server Mailpit 1025) **sebelum** menjalankan skrip di atas, lalu amati pertukaran perintahnya:
+
+![SMTP Capture](images\image-baru\Wireshark\SMTP\hasilcapture3.png)
+![SMTP Capture](images\image-baru\Wireshark\SMTP\hasilcapture.png)
+![SMTP Capture](images\image-baru\Wireshark\SMTP\hasilcapture2.png)
 
 | Perintah SMTP | Keterangan |
 | :--- | :--- |
@@ -395,7 +399,7 @@ Jalankan Wireshark dengan filter `smtp` **sebelum** menjalankan skrip di atas, l
 
 Karena Mailpit tidak mewajibkan autentikasi secara default, seluruh transaksi ini bisa diamati tanpa langkah `AUTH LOGIN` tambahan — cocok untuk fokus ke mekanisme dasar protokolnya dulu. Buka `http://localhost:8025` di browser untuk memastikan email tadi benar-benar "diterima" oleh Mailpit:
 
-![Mailpit Web UI](images/mailpit-webui.png)
+![Mailpit Web UI](images\image-baru\Wireshark\SMTP\SMTPUI.png)
 
 #### 1.7.3 HTTP (Hypertext Transfer Protocol)
 
