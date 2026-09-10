@@ -385,9 +385,9 @@ with smtplib.SMTP("127.0.0.1", 25) as server:
 
 Jalankan Wireshark dengan filter `smtp` (karena port server Mailpit 1025) **sebelum** menjalankan skrip di atas, lalu amati pertukaran perintahnya:
 
-![SMTP Capture](images\image-baru\Wireshark\SMTP\hasilcapture3.png)
-![SMTP Capture](images\image-baru\Wireshark\SMTP\hasilcapture.png)
-![SMTP Capture](images\image-baru\Wireshark\SMTP\hasilcapture2.png)
+![SMTP Capture](images/image-baru/Wireshark/SMTP/hasilcapture3.png)
+![SMTP Capture](images/image-baru/Wireshark/SMTP/hasilcapture.png)
+![SMTP Capture](images/image-baru/Wireshark/SMTP/hasilcapture2.png)
 
 | Perintah SMTP | Keterangan |
 | :--- | :--- |
@@ -399,7 +399,7 @@ Jalankan Wireshark dengan filter `smtp` (karena port server Mailpit 1025) **sebe
 
 Karena Mailpit tidak mewajibkan autentikasi secara default, seluruh transaksi ini bisa diamati tanpa langkah `AUTH LOGIN` tambahan — cocok untuk fokus ke mekanisme dasar protokolnya dulu. Buka `http://localhost:8025` di browser untuk memastikan email tadi benar-benar "diterima" oleh Mailpit:
 
-![Mailpit Web UI](images\image-baru\Wireshark\SMTP\SMTPUI.png)
+![Mailpit Web UI](images/image-baru/Wireshark/SMTP/SMTPUI.png)
 
 #### 1.7.3 HTTP (Hypertext Transfer Protocol)
 
@@ -408,7 +408,7 @@ HTTP adalah protokol request-response yang mendasari web. Untuk mengamatinya tan
 ``` 
 python3 -m http.server 8080 / python -m http.server 8080
 ```
-![dirlisthttp](images\image-baru\Wireshark\dirlist.png)
+![dirlisthttp](images/image-baru/Wireshark/dirlist.png)
 
 Perintah ini menjalankan server HTTP sederhana di `http://localhost:8080` yang menyajikan isi folder tempat perintah dijalankan.
 
@@ -419,7 +419,7 @@ curl http://localhost:8080/
 
 Amati struktur request dan response-nya di Wireshark:
 
-![HTTP Capture](images\image-baru\Wireshark\traffichttp.png)
+![HTTP Capture](images/image-baru/Wireshark/traffichttp.png)
 
 - **Request line**: `GET / HTTP/1.1` — metode, path yang diminta, dan versi protokol.
 - **Request headers**: `Host`, `User-Agent`, `Accept`, dsb.
@@ -428,7 +428,7 @@ Amati struktur request dan response-nya di Wireshark:
 
 Klik kanan pada salah satu paket HTTP lalu pilih **Follow -> HTTP Stream** (lihat [bagian 1.4.2](#142-follow-stream-tcp-udp-http)) untuk melihat keseluruhan request dan response sebagai satu blok teks yang mudah dibaca:
 
-![HTTP Follow Stream](images\image-baru\Wireshark\httpstream.png)
+![HTTP Follow Stream](images/image-baru/Wireshark/httpstream.png)
 
 > **Bandingkan dengan HTTPS:** Karena trafik di atas dikirim tanpa enkripsi, seluruh header dan body terlihat apa adanya. Ulangi eksperimen serupa terhadap situs HTTPS sambil mengaktifkan teknik dekripsi `SSLKEYLOGFILE` pada [bagian 1.6](#16-menangkap-dan-mendekripsi-trafik-httpstls) untuk melihat bahwa strukturnya sebenarnya sama — hanya dibungkus lapisan enkripsi TLS.
 
@@ -675,11 +675,11 @@ Setelah GNS3 Desktop terpasang (lihat [bagian 2.2](#22-instalasi-gns3)), client 
 1. Pastikan node dalam kondisi berhenti (*Stop*). Klik kanan pada node, pilih **Configure**.
 2. Pada tab **General settings**, klik tombol **Edit network configuration**.
 
-   ![setup-ip](images\image-baru\setupnode\node.png)
+   ![setup-ip](images/image-baru/setupnode/node.png)
 
 3. File konfigurasi `/etc/network/interfaces` akan terbuka untuk mengatur konfigurasi IP statis atau dinamis pada interface yang digunakan.
 
-   ![setup-ip](images\image-baru\setupnode\networkconf.png)
+   ![setup-ip](images/image-baru/setupnode/networkconf.png)
    
 ---
 
@@ -697,11 +697,11 @@ Setelah GNS3 Desktop terpasang (lihat [bagian 2.2](#22-instalasi-gns3)), client 
       # up sysctl -w net.ipv4.ip_forward=1    
       # up iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE    <-- lihat kebawah kenapa butuh 2 ini
    ```
-   ![internet-access-test](images\image-baru\setupnode\aksesinternet.png)
+   ![internet-access-test](images/image-baru/setupnode/aksesinternet.png)
    
 4. Jalankan node, buka konsol, lalu uji koneksi dengan perintah `ping -c 3 google.com` atau `ping -c 3 8.8.8.8`.
 
-   ![internet-access-test](images\image-baru\setupnode\adainternet.png)
+   ![internet-access-test](images/image-baru/setupnode/adainternet.png)
 
 5. Ubah nama node menjadi `Router1` melalui klik kanan -> **Change hostname** atau dari panel `configure`, dan ubah simbolnya menjadi router melalui klik kanan -> **Change symbol** (Terserah kalian, tapi lebih rapih diganti.). Node ini siap digunakan sebagai router pada topologi berikutnya.
 
@@ -711,7 +711,7 @@ Setelah GNS3 Desktop terpasang (lihat [bagian 2.2](#22-instalasi-gns3)), client 
 
 Tambahkan node **Ethernet switch** dan beberapa node Linux, hubungkan menggunakan kabel, dan beri nama setiap perangkat:
 
-![topologi-contoh](images\image-baru\setupnode\topologi.png)
+![topologi-contoh](images/image-baru/setupnode/topologi.png)
 
 #### 2.7.1 Skema Pengalamatan IP
 
@@ -813,15 +813,15 @@ echo "nameserver 8.8.8.8" > /etc/resolv.conf
 1. Cek konfigurasi IP pada setiap node dengan perintah `ip a`:
 2. Uji ping dari Client1 ke gateway: `ping -c 2 10.10.1.1`.
 
-   ![cihuy](images\image-baru\setupnode\clientgateaway.png)
+   ![cihuy](images/image-baru/setupnode/clientgateaway.png)
 
 3. Uji routing antar-subnet dari Client1 ke Client2: `ping -c 2 10.10.2.2`.
 
-   ![woilah](images\image-baru\setupnode\antarsubnet.png)
+   ![woilah](images/image-baru/setupnode/antarsubnet.png)
 
 4. Uji akses internet publik dari Client1 dan Client2: `ping -c 2 8.8.8.8` dan `ping -c 2 google.com`.
 
-   ![yeehaw](images\image-baru\setupnode\internet.png)
+   ![yeehaw](images/image-baru/setupnode/internet.png)
 
 ---
 
