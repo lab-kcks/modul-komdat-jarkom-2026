@@ -93,12 +93,12 @@ Unduh installer resmi dari [wireshark.org/download.html](https://www.wireshark.o
 
 **Linux (Debian / Ubuntu / Kali)**
 Install lewat package manager:
-```bash
+``` 
 sudo apt update
 sudo apt install -y wireshark tshark
 ```
 Saat instalasi muncul pertanyaan apakah user non-root boleh melakukan capture, pilih **Yes**. Kemudian tambahkan user kalian ke group `wireshark`:
-```bash
+``` 
 sudo usermod -aG wireshark $USER
 ```
 Terapkan perubahan group dengan `newgrp wireshark` atau lakukan logout/login ulang agar Wireshark dapat berjalan tanpa perintah `sudo`.
@@ -244,15 +244,15 @@ Langkah-langkah:
 
 1. Tentukan lokasi penyimpanan file log kunci enkripsi sebelum membuka browser:
    - Windows (Command Prompt):
-     ```cmd
+     ```
      set SSLKEYLOGFILE=C:\Users\Public\tls-keys.log
      ```
    - Windows (PowerShell):
-     ```powershell
+     ```
      $env:SSLKEYLOGFILE="C:\Users\Public\tls-keys.log"
      ```
    - Linux / macOS:
-     ```bash
+     ``` 
      export SSLKEYLOGFILE=~/tls-keys.log
      ```
 2. Dari sesi terminal yang sama, buka browser:
@@ -321,11 +321,11 @@ FileZilla Server modern menggunakan arsitektur service di background dengan anta
 
 *Koneksi via Command Line (Windows / Linux CLI)*:
 - Di Windows: Buka Command Prompt (CMD), utility `ftp` sudah tersedia bawaan:
-  ```cmd
+  ```
   ftp [IP_SERVER]
   ```
 - Di Linux: Jalankan perintah (pasang paket jika belum ada via `sudo apt install ftp`):
-  ```bash
+  ``` 
   ftp [IP_SERVER]
   ```
 
@@ -355,7 +355,7 @@ SMTP adalah protokol berbasis command-response teks (mirip FTP) yang menjadi das
 **Menjalankan Mailpit**
 
 Cara tercepat adalah lewat Docker (satu baris, tanpa instalasi tambahan):
-```bash
+``` 
 docker run -d --name mailpit -p 8025:8025 -p 1025:1025 axllent/mailpit
 ```
 Perintah ini menjalankan:
@@ -368,12 +368,12 @@ Alternatif tanpa Docker: unduh binary tunggal dari [halaman rilis Mailpit di Git
 
 Karena Mailpit hanya *menerima* email, kita perlu cara untuk mengirimnya. Skrip Python singkat berikut memakai modul `smtplib` bawaan (tidak perlu instalasi tambahan):
 
-```python
+```
 import smtplib
 from email.mime.text import MIMEText
 
-msg = MIMEText("Ini isi email uji coba untuk diamati di Wireshark.")
-msg["Subject"] = "Uji Coba SMTP"
+msg = MIMEText("Menurutku tomboy lebih baik daripada femboy.")
+msg["Subject"] = "whnyh"
 msg["From"] = "pengirim@lab.local"
 msg["To"] = "penerima@lab.local"
 
@@ -401,14 +401,14 @@ Karena Mailpit tidak mewajibkan autentikasi secara default, seluruh transaksi in
 
 HTTP adalah protokol request-response yang mendasari web. Untuk mengamatinya tanpa bergantung pada situs eksternal, kita bisa menjalankan server HTTP lokal memakai modul bawaan Python (tidak perlu instalasi tambahan):
 
-```bash
+``` 
 python3 -m http.server 8080
 ```
 
 Perintah ini menjalankan server HTTP sederhana di `http://localhost:8080` yang menyajikan isi folder tempat perintah dijalankan.
 
 Jalankan Wireshark dengan filter `http`, lalu akses server tersebut lewat browser atau `curl`:
-```bash
+``` 
 curl http://localhost:8080/
 ```
 
@@ -482,15 +482,13 @@ GNS3 3.0.6 dibagikan sebagai satu **installer all-in-one** yang mencakup GNS3 De
 
    ![assets](images/image-baru/SetupGNS/Installation.png)
 
-3. Jalankan installer, klik **Next** pada layar sambutan.
+3. Jalankan installer, klik **Next** terus melalui layar sambutan dan Setujui **License Agreement** (GPLv3).
 
    ![wizard](images/image-baru/SetupGNS/wizard.png)
 
-4. Setujui **License Agreement** (GPLv3).
-
    ![license](images/image-baru/SetupGNS/LA.png)
 
-5. Pada layar **Choose Components**, pilih tipe install **Custom** agar bisa memilih komponen satu per satu:
+4. Pada layar **Choose Components**, pilih tipe install **Custom** agar bisa memilih komponen satu per satu:
    - **GNS3 Desktop** — aplikasi client utama.
    - **GNS3 WebClient** — akses lewat browser tanpa perlu membuka aplikasi desktop.
    - **GNS3 VM** — centang **hanya jika** kalian ingin menjalankan server/controller sendiri di komputer ini (lihat bagian opsional di bawah). Untuk praktikum yang controllernya sudah disediakan asisten, bagian ini **boleh dikosongkan**.
@@ -498,21 +496,25 @@ GNS3 3.0.6 dibagikan sebagai satu **installer all-in-one** yang mencakup GNS3 De
 
    ![choose components](images/image-baru/SetupGNS/InstalasiGNSnya.png)
 
-6. **Jika mencentang GNS3 VM**, wizard akan meminta jenis virtualisasi yang dipakai: VMware Workstation, VMware ESXi, VirtualBox, atau Hyper-V. Pilih salah satu lalu klik **Install** — installer akan mengunduh `VM.zip` yang sesuai ke folder Downloads kalian secara otomatis. File ini masih perlu di-*extract* dan di-*import* manual ke aplikasi virtualisasi pilihan kalian (langkah lengkapnya ada di bagian opsional "Menyiapkan GNS3 VM Sendiri" di bawah).
+5. **Jika mencentang GNS3 VM**, wizard akan meminta jenis virtualisasi yang dipakai: VMware Workstation, VMware ESXi, VirtualBox, atau Hyper-V. Pilih salah satu lalu klik **Install** — installer akan mengunduh `VM.zip` yang sesuai ke folder Downloads kalian secara otomatis. File ini masih perlu di-*extract* dan di-*import* manual ke aplikasi virtualisasi pilihan kalian (langkah lengkapnya ada di bagian opsional "Menyiapkan GNS3 VM Sendiri" di bawah).
 
    ![pilih VM](images/image-baru/SetupGNS/kaloinstallVM.png)
 
-7. Pilih folder Start Menu, lalu klik **Next** hingga instalasi selesai.
+6. Pilih folder Start Menu, lalu klik **Next** hingga instalasi selesai. (Setelah ini juga ada ada panel lagi, pilih **No** aja.)
 
    ![start menu](images/image-baru/SetupGNS/startmenu.png)
 
-8. Klik **Finish**. Centang **Start GNS3** untuk langsung membuka aplikasinya.
+7. Klik **Finish**. Centang **Start GNS3** untuk langsung membuka aplikasinya.
 
    ![finish](images/image-baru/SetupGNS/finish.png)
+
+> **!PENTING!**
 
 > **macOS**: Alur instalasi serupa lewat file `.dmg`. Video referensi setup GNS3 di macOS: [youtube.com/watch?v=7Hui9aDqX50](https://www.youtube.com/watch?v=7Hui9aDqX50).
 >
 > **iOS/iPadOS**: GNS3 juga menyediakan client resmi di App Store bagi yang ingin mengakses controller dari perangkat mobile.
+
+---
 
 Bagian di bawah ini (Opsi A dan Opsi B) hanya perlu diikuti jika kalian mencentang **GNS3 VM** pada langkah 5 di atas dan ingin meng-*host* controller sendiri. Jika kalian memakai controller bersama yang sudah disediakan asisten, langsung lanjut ke [bagian 2.4](#24-instalasi-dan-setup-gns3-client).
 
@@ -564,7 +566,7 @@ Jika muncul pesan error virtualisasi tidak didukung:
 1. Pastikan fitur Intel VT-x atau AMD-V aktif di menu BIOS/UEFI komputer kalian.
 2. Di Windows 11, nonaktifkan isolasi memori: **Windows Security -> Device Security -> Core Isolation -> Matikan Memory Integrity**.
 3. Jika Hyper-V memblokir hypervisor pihak ketiga, jalankan perintah ini di PowerShell Administrator lalu reboot:
-   ```powershell
+   ```
    bcdedit /set hypervisorlaunchtype off
    ```
 
@@ -588,10 +590,10 @@ Ada dua jalur untuk mengatur template node: lewat GNS3 Desktop Client, atau lang
 
    ![apply image](images/image-baru/SetupImage/applyimage.png)
 
-4. Isi nama image Docker sesuai rekomendasi praktikum:
+4. Isi nama image Docker <u>sesuai rekomendasi praktikum</u>:
    - `ardhptr21/alpinet:latest` (berbasis Alpine, ringan)
    - `ardhptr21/debinet:latest` (berbasis Debian, lebih lengkap)
-   - Alternatif image resmi dari tim GNS3 (kalau image di atas sudah tidak ter-*maintain*): [`gns3/ipterm`](https://hub.docker.com/r/gns3/ipterm) — sudah terpasang `iproute2`, `ping`, `curl`, `traceroute`, `nano`.
+   - Alternatif <u>image resmi</u> dari GNS3 (kalau image di atas sudah tidak ter-*maintain*): [`gns3/ipterm`](https://hub.docker.com/r/gns3/ipterm) — sudah terpasang `iproute2`, `ping`, `curl`, `traceroute`, `nano`.
 5. Tentukan jumlah **Network adapters** sesuai kebutuhan topologi (isi **4** untuk node yang akan dipakai sebagai router agar memiliki interface eth0 hingga eth3).
 6. Klik **Apply** lalu **OK**.
 
@@ -608,11 +610,13 @@ Ada dua jalur untuk mengatur template node: lewat GNS3 Desktop Client, atau lang
 **Menguji Template**
 
 1. Buat project baru (**File -> New blank project** di Desktop, atau **Add blank project** di WebClient — lihat [bagian 2.4](#24-instalasi-dan-setup-gns3-client)), lalu tarik node baru ke workspace.
+   ![test-node](images/image-baru/WebUI/WebUI.png)
 
-   ![test-node](images/gns3-test-node.png)
+   ![test-node](images/image-baru/WebUI/buatproject.png)
 
 2. Klik kanan node lalu pilih **Start**. Akses konsol melalui **Web console**, atau terminal lokal via Telnet:
-   ```bash
+   
+   ```
    telnet [IP_CONTROLLER] [Port_Node]
    ```
    Untuk keluar dari sesi Telnet, tekan shortcut `Ctrl + ]` lalu ketik `quit`.
@@ -680,7 +684,7 @@ Setelah GNS3 Desktop terpasang (lihat [bagian 2.2](#22-instalasi-gns3)), client 
    ![internet-access-link](images/gns3-internet-link.png)
 
 3. Konfigurasikan interface `eth0` node agar meminta IP otomatis lewat DHCP:
-   ```text
+   ```
    auto eth0
    iface eth0 inet dhcp
    ```
@@ -710,7 +714,7 @@ Tambahkan node **Ethernet switch** dan beberapa node Linux, hubungkan menggunaka
 
 #### 2.7.2 Konfigurasi Router Linux (Multi-Homed)
 Buka konfigurasi jaringan pada **Router1**:
-```text
+```
 auto eth0
 iface eth0 inet dhcp
 
@@ -726,7 +730,7 @@ iface eth2 inet static
 ```
 
 Konfigurasi pada **Client1** di belakang LAN 1:
-```text
+```
 auto eth0
 iface eth0 inet static
     address 10.10.1.2
@@ -735,7 +739,7 @@ iface eth0 inet static
 ```
 
 Konfigurasi pada **Client2** di belakang LAN 2:
-```text
+```
 auto eth0
 iface eth0 inet static
     address 10.10.2.2
@@ -747,14 +751,14 @@ iface eth0 inet static
 Sistem operasi Linux secara default menonaktifkan penerusan paket antar-interface. Tanpa pengaturan ini, paket dari LAN 1 tidak akan pernah bisa melompat ke interface internet `eth0`.
 
 Nyalakan router, buka konsol, lalu jalankan:
-```bash
+``` 
 sysctl -w net.ipv4.ip_forward=1
 ```
 Pastikan nilainya bernilai 1 dengan mengecek `cat /proc/sys/net/ipv4/ip_forward`.
 
 #### 2.7.4 Konfigurasi Source NAT (iptables MASQUERADE)
 Karena alamat `10.10.1.0/24` dan `10.10.2.0/24` adalah IP Private, router harus menyamarkan alamat sumber paket menjadi IP milik `eth0` saat paket keluar menuju internet:
-```bash
+``` 
 iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
 iptables -A FORWARD -i eth2 -o eth0 -j ACCEPT
@@ -762,7 +766,7 @@ iptables -A FORWARD -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
 ```
 
 > **Tips Persistensi Router:** Karena container Docker bersifat ephemeral, kalian dapat menyisipkan perintah ini langsung ke konfigurasi interface `eth0` router (`/etc/network/interfaces`) menggunakan baris awalan `up` agar otomatis dimuat setiap kali node dinyalakan ulang:
-> ```text
+> ```
 > auto eth0
 > iface eth0 inet dhcp
 >     up sysctl -w net.ipv4.ip_forward=1
@@ -771,7 +775,7 @@ iptables -A FORWARD -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
 
 #### 2.7.5 Konfigurasi Client dan DNS Resolver
 Nyalakan Client1 dan Client2. Buka konsol masing-masing lalu tambahkan DNS resolver:
-```bash
+``` 
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
 ```
 
@@ -792,9 +796,9 @@ echo "nameserver 8.8.8.8" > /etc/resolv.conf
 
 - File dan aplikasi yang diinstal di dalam root filesystem container Docker bersifat **ephemeral** (hilang saat node dihapus). Hanya direktori `/root` yang dipertahankan secara persisten oleh image seperti `gns3/ipterm`.
 - Simpan seluruh skrip otomasi konfigurasi penting ke dalam folder `/root`.
-- Perintah yang ingin dijalankan otomatis setiap kali membuka konsol dapat dimasukkan ke bagian bawah file `/root/.bashrc`.
+- Perintah yang ingin dijalankan otomatis setiap kali membuka konsol dapat dimasukkan ke bagian bawah file `/root/. rc`.
 - Perintah startup jaringan juga dapat dimasukkan langsung ke file `/etc/network/interfaces` menggunakan baris awalan `up`:
-  ```text
+  ```
   auto eth0
   iface eth0 inet dhcp
       up sysctl -w net.ipv4.ip_forward=1
@@ -824,7 +828,7 @@ GNS3 memungkinkan penyadapan link virtual secara real-time langsung ke Wireshark
 Untuk menangkap paket langsung dari sudut pandang internal node tanpa GUI:
 
 **Menggunakan tcpdump**
-```bash
+``` 
 # Menangkap 10 paket pertama pada eth0
 tcpdump -i eth0 -n -c 10
 
@@ -833,7 +837,7 @@ tcpdump -i eth0 -s 0 -w /root/hasil-capture.pcap
 ```
 
 **Menggunakan TShark**
-```bash
+``` 
 tshark -i eth0 -w /root/hasil-capture.pcap
 ```
 Hentikan capture dengan `Ctrl + C`. File `.pcap` dapat dibaca kembali di terminal menggunakan `tshark -r /root/hasil-capture.pcap` atau disalin ke komputer host untuk dibuka pada Wireshark GUI.
