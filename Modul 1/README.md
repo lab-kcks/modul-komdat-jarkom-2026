@@ -896,7 +896,7 @@ Hentikan capture dengan `Ctrl + C`. File `.pcap` dapat dibaca kembali di termina
 1. **Analisis ARP & ICMP:** Bangun topologi sederhana (2 node + 1 switch) di GNS3. Lakukan capture pada link, kirim `ping` antar-node, lalu identifikasi protokol dan opcode yang muncul sebelum balasan ping pertama diterima.
    - *File capture acuan:* [`pcap_latihan/latihan1_arp_icmp.pcap`](pcap_latihan/latihan1_arp_icmp.pcap)
 
-2. **Capture Filter BPF:** Terapkan capture filter BPF di GNS3 yang hanya menangkap lalu lintas data dari salah satu IP node. Tuliskan sintaks filter yang digunakan.
+2. **Capture Filter:** Terapkan capture filter di Wireshark (bukan menu Packet Filters pada link GNS3) yang hanya menangkap lalu lintas data dari salah satu IP node. Tuliskan sintaks filter yang digunakan.
 
 3. **Dekripsi HTTPS:** Jalankan pengujian HTTPS dengan `SSLKEYLOGFILE` aktif pada browser host (ikuti panduan pada [Subbab 1.6](#16-menangkap-dan-mendekripsi-trafik-httpstls)). Dekripsikan trafiknya di Wireshark dan sebutkan protokol internal yang terlihat di dalam payload setelah didekripsi.
    - *File capture acuan:* [`pcap_latihan/latihan3_https.pcapng`](pcap_latihan/latihan3_https.pcapng)
