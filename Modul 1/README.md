@@ -16,15 +16,14 @@
       - [1.4.2 Follow Stream (TCP, UDP, HTTP)](#142-follow-stream-tcp-udp-http)
       - [1.4.3 Ringkasan Trafik (Statistics)](#143-ringkasan-trafik-statistics)
     - [1.5 Export Data Hasil Packet Capture](#15-export-data-hasil-packet-capture)
-    - [1.6 Menangkap dan Mendekripsi Trafik HTTPS/TLS](#16-menangkap-dan-mendekripsi-trafik-httpstls)
-    - [1.7 Studi Kasus: Analisis Protokol Jaringan](#17-studi-kasus-analisis-protokol-jaringan)
-      - [1.7.1 FTP (File Transfer Protocol)](#171-ftp-file-transfer-protocol)
-      - [1.7.2 SMTP (Simple Mail Transfer Protocol)](#172-smtp-simple-mail-transfer-protocol)
-      - [1.7.3 HTTP (Hypertext Transfer Protocol)](#173-http-hypertext-transfer-protocol)
-    - [1.8 Pola Protokol Jaringan Esensial](#18-pola-protokol-jaringan-esensial)
-      - [1.8.1 TCP Three-Way Handshake dan Teardown](#181-tcp-three-way-handshake-dan-teardown)
-      - [1.8.2 Resolusi Alamat dengan ARP](#182-resolusi-alamat-dengan-arp)
-      - [1.8.3 Mekanisme Diagnostik ICMP](#183-mekanisme-diagnostik-icmp)
+    - [1.6 Studi Kasus: Analisis Protokol Jaringan](#16-studi-kasus-analisis-protokol-jaringan)
+      - [1.6.1 FTP (File Transfer Protocol)](#161-ftp-file-transfer-protocol)
+      - [1.6.2 SMTP (Simple Mail Transfer Protocol)](#162-smtp-simple-mail-transfer-protocol)
+      - [1.6.3 HTTP (Hypertext Transfer Protocol)](#163-http-hypertext-transfer-protocol)
+    - [1.7 Pola Protokol Jaringan Esensial](#17-pola-protokol-jaringan-esensial)
+      - [1.7.1 TCP Three-Way Handshake dan Teardown](#171-tcp-three-way-handshake-dan-teardown)
+      - [1.7.2 Resolusi Alamat dengan ARP](#172-resolusi-alamat-dengan-arp)
+      - [1.7.3 Mekanisme Diagnostik ICMP](#173-mekanisme-diagnostik-icmp)
   - [2. GNS3](#2-gns3)
     - [2.1 Apa itu GNS3?](#21-apa-itu-gns3)
     - [2.2 Instalasi GNS3](#22-instalasi-gns3)
@@ -50,7 +49,6 @@
   - [4. Latihan](#4-latihan)
   - [5. Troubleshooting Common Pitfalls](#5-troubleshooting-common-pitfalls)
   - [6. Referensi](#6-referensi)
-
 ---
 
 ## 0. Pendahuluan
@@ -236,48 +234,24 @@ Menu **Statistics** menyajikan gambaran agregat saat capture berisi ribuan paket
 
 ---
 
-### 1.6 Menangkap dan Mendekripsi Trafik HTTPS/TLS
+### 1.6 Studi Kasus: Analisis Protokol Jaringan
 
-Situs web modern menggunakan enkripsi **HTTPS/TLS** (port 443). Wireshark dapat menangkap paketnya, namun isi muatan payload hanya terlihat sebagai `Application Data` terenkripsi. Untuk kebutuhan praktikum analitik, kita dapat mendekripsi trafik HTTPS milik sendiri menggunakan mekanisme environment variable `SSLKEYLOGFILE`.
+Sebenarnya ada banyak sekali jenis trafik yang bisa dianalisis di Wireshark — DNS, DHCP, TLS, QUIC, dan puluhan protokol lain. Namun kami memilih tiga studi kasus berikut yaitu: **FTP** (kontrol multi-channel dan transfer file), **SMTP** (pengiriman email berbasis command-response), dan **HTTP** (request-response berbasis teks yang mendasari web). Ketiganya sengaja dipilih karena masih tidak terenkripsi secara default dan cocok sebagai titik awal yang paling jelas untuk belajar *cara membaca* sebuah protokol di Wireshark, sebelum nanti mencoba protokol lain yang lebih kompleks atau terenkripsi sehingga seluruh proses komunikasinya bisa diamati apa adanya beserta sebagai real-case yang bisa kalian temui di _real-world case_.
 
-Langkah-langkah:
+> **Studi kasus ini contoh aja, gak plek-ketiplek.** Langkah-langkahnya nggak harus sama persis karena sebagai simulasi aja — kalau kalian mau coba protokol lain (DNS, DHCP, atau bahkan trafik game/aplikasi favorit kalian sendiri) atau eksperimen dengan cara yang berbeda, silakan aja. Justru semakin banyak dicoba-coba semakin terbiasa membaca pola trafik di Wireshark. 
+> 
+> Dokumentasi resmi [User's Guide Wireshark](https://www.wireshark.org/docs/wsug_html_chunked/index.html) juga bisa jadi bahan belajar tambahan kalau ingin menggali lebih dalam.
+>
+> Beberapa acuan belajar lain seputar Wireshark (opsional):
+> - [Wireshark Basics (Luca Deri, ntop)](https://luca.ntop.org/gr2022/Wireshark.pdf)
+> - [Wireshark Cheat Sheet — Black Hills Information Security](https://www.blackhillsinfosec.com/wireshark-cheatsheet/)
+> - [SOC Analyst Wireshark Cheat Sheet (Medium)](https://medium.com/@rebaleos0/soc-analyst-wireshark-cheat-sheet-e5915c3628b7)
+> - [Video: Wireshark Tutorial](https://www.youtube.com/watch?v=NdTu3bDTBbo)
+> - [Video: Wireshark for Beginners](https://www.youtube.com/watch?v=qTaOZrDnMzQ)
+> - AND MORE!
 
-1. Tentukan lokasi penyimpanan file log kunci enkripsi sebelum membuka browser:
-   - Windows (Command Prompt):
-     ```
-     set SSLKEYLOGFILE=C:\Users\Public\tls-keys.log
-     ```
-   - Windows (PowerShell):
-     ```
-     $env:SSLKEYLOGFILE="C:\Users\Public\tls-keys.log"
-     ```
-   - Linux / macOS:
-     ``` 
-     export SSLKEYLOGFILE=~/tls-keys.log
-     ```
-2. Dari sesi terminal yang sama, buka browser:
-   - Windows: jalankan Google Chrome atau Firefox.
-   - Linux: ketik `google-chrome &` atau `firefox &`.
-3. Mulai capture di Wireshark pada interface aktif, lalu akses situs HTTPS (misalnya `https://example.com`).
-4. Di Wireshark, buka **Edit -> Preferences -> Protocols -> TLS**. Pada kolom **(Pre)-Master-Secret log filename**, isi path ke file log kunci yang ditentukan tadi.
 
-   ![TLS Preferences](images/tls-preferences.png)
-
-5. Terapkan display filter `http || http2` atau `tls`. Paket yang semula bertuliskan `Application Data` kini terbuka isinya dan menampilkan request HTTP/1.1 atau HTTP/2 secara plaintext.
-
-   ![TLS Decrypted](images/tls-decrypted.png)
-
-> **Catatan keamanan:** File key log ini berisi kunci simetris sesi. Jangan pernah membagikan file ini ke orang lain dan hapus file setelah sesi praktikum selesai.
-
-Teknik ini akan dipakai kembali sebagai pembanding pada studi kasus HTTP di [bagian 1.7.3](#173-http-hypertext-transfer-protocol).
-
----
-
-### 1.7 Studi Kasus: Analisis Protokol Jaringan
-
-Tiga studi kasus berikut menunjukkan bagaimana protokol aplikasi yang berbeda "terlihat" di Wireshark: **FTP** (kontrol multi-channel dan transfer file), **SMTP** (pengiriman email berbasis command-response), dan **HTTP** (request-response berbasis teks yang mendasari web). Ketiganya sengaja dipilih karena tidak terenkripsi secara default, sehingga seluruh proses komunikasinya bisa diamati apa adanya.
-
-#### 1.7.1 FTP (File Transfer Protocol)
+#### 1.6.1 FTP (File Transfer Protocol)
 
 Protokol File Transfer Protocol (FTP) sangat cocok untuk studi analisis protokol karena seluruh autentikasi dan kontrol ditransmisikan dalam bentuk plaintext tanpa enkripsi.
 
@@ -348,7 +322,7 @@ Pada capture Wireshark dengan filter `ftp`, perhatikan bahwa kredensial dikirimk
 
 ![RETR](images/wireshark-ftp-retr.png)
 
-#### 1.7.2 SMTP (Simple Mail Transfer Protocol)
+#### 1.6.2 SMTP (Simple Mail Transfer Protocol)
 
 SMTP adalah protokol berbasis command-response teks (mirip FTP) yang menjadi dasar pengiriman email. Untuk praktikum ini kita tidak mengirim email ke server publik sungguhan, melainkan memakai **Mailpit** — SMTP server tiruan yang menangkap semua email masuk dan menampilkannya di web UI tanpa pernah benar-benar mengirim apa pun keluar. Mailpit adalah pengganti modern dari MailHog yang sudah tidak dikembangkan lagi.
 
@@ -401,7 +375,7 @@ Karena Mailpit tidak mewajibkan autentikasi secara default, seluruh transaksi in
 
 ![Mailpit Web UI](images/image-baru/Wireshark/SMTP/SMTPUI.png)
 
-#### 1.7.3 HTTP (Hypertext Transfer Protocol)
+#### 1.6.3 HTTP (Hypertext Transfer Protocol)
 
 HTTP adalah protokol request-response yang mendasari web. Untuk mengamatinya tanpa bergantung pada situs eksternal, kita bisa menjalankan server HTTP lokal memakai modul bawaan Python (tidak perlu instalasi tambahan):
 
@@ -430,13 +404,13 @@ Klik kanan pada salah satu paket HTTP lalu pilih **Follow -> HTTP Stream** (liha
 
 ![HTTP Follow Stream](images/image-baru/Wireshark/httpstream.png)
 
-> **Bandingkan dengan HTTPS:** Karena trafik di atas dikirim tanpa enkripsi, seluruh header dan body terlihat apa adanya. Ulangi eksperimen serupa terhadap situs HTTPS sambil mengaktifkan teknik dekripsi `SSLKEYLOGFILE` pada [bagian 1.6](#16-menangkap-dan-mendekripsi-trafik-httpstls) untuk melihat bahwa strukturnya sebenarnya sama — hanya dibungkus lapisan enkripsi TLS.
+> **Jika dibandingkan dengan HTTPS:** Karena trafik di atas dikirim tanpa enkripsi, seluruh header dan body terlihat apa adanya. Ulangi eksperimen serupa terhadap situs HTTPS sambil mengaktifkan teknik dekripsi `SSLKEYLOGFILE` untuk melihat bahwa strukturnya sebenarnya sama — hanya dibungkus lapisan enkripsi TLS.
 
 ---
 
-### 1.8 Pola Protokol Jaringan Esensial
+### 1.7 Pola Protokol Jaringan Esensial
 
-#### 1.8.1 TCP Three-Way Handshake dan Teardown
+#### 1.7.1 TCP Three-Way Handshake dan Teardown
 Sebelum pertukaran data TCP dimulai, koneksi dibangun melalui 3 langkah:
 1. **SYN**: Client mengirim segmen dengan flag SYN aktif, Sequence Number awal (ISN = 0 relatif).
 2. **SYN-ACK**: Server membalas dengan flag SYN dan ACK aktif, Sequence Number miliknya sendiri, dan Acknowledgment Number = Client ISN + 1.
@@ -444,12 +418,12 @@ Sebelum pertukaran data TCP dimulai, koneksi dibangun melalui 3 langkah:
 
 Penutupan koneksi dilakukan secara teratur melalui 4 arah menggunakan flag **FIN** dan **ACK**, atau diputus secara paksa seketika menggunakan flag **RST**.
 
-#### 1.8.2 Resolusi Alamat dengan ARP
+#### 1.7.2 Resolusi Alamat dengan ARP
 Address Resolution Protocol (ARP) memetakan IP logis ke MAC address fisik:
 - **ARP Request**: Dikirim secara broadcast ke seluruh host di satu segmen jaringan (`ff:ff:ff:ff:ff:ff`, Opcode 1).
 - **ARP Reply**: Host pemilik IP membalas langsung ke MAC address pemohon secara unicast (Opcode 2).
 
-#### 1.8.3 Mekanisme Diagnostik ICMP
+#### 1.7.3 Mekanisme Diagnostik ICMP
 - **Echo Request (Type 8, Code 0)**: Permintaan ping dari pengirim.
 - **Echo Reply (Type 0, Code 0)**: Jawaban balasan ping dari penerima.
 - **Time-to-Live Exceeded (Type 11, Code 0)**: Dihasilkan oleh router transit ketika nilai TTL pada header IP turun menjadi 0, mendasari prinsip kerja utility `traceroute`.
@@ -893,11 +867,10 @@ Hentikan capture dengan `Ctrl + C`. File `.pcap` dapat dibaca kembali di termina
 
 ## 4. Latihan
 
-1. Bangun topologi sederhana (2 node + 1 switch) di GNS3. Lakukan capture pada link menggunakan fitur **Start capture**, kirim perintah ping antar-node, lalu identifikasi protokol dan opcode yang muncul sebelum balasan ping pertama diterima.
-2. Terapkan capture filter BPF yang hanya menangkap lalu lintas data dari salah satu IP node di topologi kalian.
-3. Jalankan pengujian HTTPS dengan environment variable `SSLKEYLOGFILE` aktif pada browser komputer host. Dekripsikan trafiknya di Wireshark dan sebutkan protokol internal yang terlihat di dalam payload setelah didekripsi.
-4. Siapkan server FTP dengan FileZilla Server, rekam proses login dan pengiriman file menggunakan Wireshark, lalu tunjukkan baris paket plaintext yang memuat username, password, dan instruksi transfer file.
-5. Jalankan `tcpdump` atau `tshark` langsung di dalam konsol salah satu node GNS3 untuk menangkap paket ICMP tanpa menggunakan GUI, lalu buka file `.pcap` hasilnya di Wireshark komputer host.
+1. Bangun topologi sederhana (2 node + 1 switch) di GNS3. Lakukan live capture pada link menggunakan fitur **Start capture**, kirim perintah ping antar-node, lalu identifikasi protokol dan opcode yang muncul sebelum balasan ping pertama diterima. Setelah itu, pasang live capture lagi di interface LAN (`eth1`) dan WAN (`eth0`) Router1, lalu ping dari salah satu client ke `8.8.8.8`. Tunjukkan perubahan IP address sumber sebelum dan sesudah melewati NAT, dan jelaskan mengapa perubahan itu terjadi.
+2. Terapkan capture filter BPF yang hanya menangkap lalu lintas data dari salah satu IP node di topologi kalian, lalu bandingkan dengan display filter setara pada hasil capture yang sama tanpa filter — jelaskan perbedaan cara kerja keduanya.
+3. Siapkan server FTP dengan FileZilla Server, rekam proses login dan pengiriman file menggunakan Wireshark, lalu tunjukkan baris paket plaintext yang memuat username, password, dan instruksi transfer file.
+4. Jalankan `tcpdump` atau `tshark` langsung di dalam konsol salah satu node GNS3 untuk menangkap paket ICMP tanpa menggunakan GUI, lalu buka file `.pcap` hasilnya di Wireshark komputer host.
 
 ---
 
@@ -918,7 +891,6 @@ Hentikan capture dengan `Ctrl + C`. File `.pcap` dapat dibaca kembali di termina
 - [Dokumentasi Resmi Wireshark](https://www.wireshark.org/docs/wsug_html_chunked/)
 - [Wireshark Capture Filter BPF Reference](https://www.wireshark.org/docs/wsug_html_chunked/ChCapCaptureFilterSection.html)
 - [Wireshark Display Filter Reference](https://www.wireshark.org/docs/wsug_html_chunked/ChWorkBuildDisplayFilterSection.html)
-- [Wireshark TLS Decryption Wiki](https://wiki.wireshark.org/TLS)
 - [Dokumentasi Inti GNS3](https://docs.gns3.com/)
 - [Halaman Rilis GNS3 (GitHub)](https://github.com/GNS3/gns3-gui/releases)
 - [Video Setup GNS3 di macOS](https://www.youtube.com/watch?v=7Hui9aDqX50)
