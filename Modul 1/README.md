@@ -901,8 +901,6 @@ Hentikan capture dengan `Ctrl + C`. File `.pcap` dapat dibaca kembali di termina
    
 5. **Inspeksi FTP Plaintext:** Rekam proses login dan pengiriman berkas ke server FTP menggunakan Wireshark, lalu tunjukkan paket plaintext yang memuat username dan password.
 
-6. **Capture via CLI (tcpdump):** Jalankan `tcpdump` atau `tshark` langsung di konsol node GNS3 untuk menangkap paket ICMP tanpa GUI, lalu buka file `.pcap` hasilnya di Wireshark komputer host.
-
 ---
 
 ## 5. Troubleshooting Common Pitfalls
