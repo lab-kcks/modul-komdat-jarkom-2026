@@ -893,11 +893,11 @@ Hentikan capture dengan `Ctrl + C`. File `.pcap` dapat dibaca kembali di termina
 
 ## 4. Latihan
 
-1. Bangun topologi sederhana (2 node + 1 switch) di GNS3. Lakukan capture pada link menggunakan fitur **Start capture**, kirim perintah ping antar-node, lalu identifikasi protokol dan opcode yang muncul sebelum balasan ping pertama diterima.
-2. Terapkan capture filter BPF yang hanya menangkap lalu lintas data dari salah satu IP node di topologi kalian.
-3. Jalankan pengujian HTTPS dengan environment variable `SSLKEYLOGFILE` aktif pada browser komputer host. Dekripsikan trafiknya di Wireshark dan sebutkan protokol internal yang terlihat di dalam payload setelah didekripsi.
-4. Siapkan server FTP dengan FileZilla Server, rekam proses login dan pengiriman file menggunakan Wireshark, lalu tunjukkan baris paket plaintext yang memuat username, password, dan instruksi transfer file.
-5. Jalankan `tcpdump` atau `tshark` langsung di dalam konsol salah satu node GNS3 untuk menangkap paket ICMP tanpa menggunakan GUI, lalu buka file `.pcap` hasilnya di Wireshark komputer host.
+1. **Analisis ARP & ICMP:** Bangun topologi sederhana (2 node + 1 switch) di GNS3. Lakukan capture pada link, kirim `ping` antar-node, lalu identifikasi protokol dan opcode yang muncul sebelum balasan ping pertama diterima.
+2. **Capture Filter BPF:** Terapkan capture filter BPF di GNS3 yang hanya menangkap lalu lintas data dari salah satu IP node. Tuliskan sintaks filter yang digunakan.
+3. **Dekripsi HTTPS:** Jalankan pengujian HTTPS dengan `SSLKEYLOGFILE` aktif pada browser host (ikuti panduan pada [Subbab 1.6](#16-menangkap-dan-mendekripsi-trafik-httpstls)). Dekripsikan trafiknya di Wireshark dan sebutkan protokol internal yang terlihat di dalam payload setelah didekripsi.
+4. **Inspeksi FTP Plaintext:** Rekam proses login dan pengiriman berkas ke server FTP menggunakan Wireshark, lalu tunjukkan paket plaintext yang memuat username, password, dan instruksi transfer file.
+5. **Capture via CLI (tcpdump):** Jalankan `tcpdump` atau `tshark` langsung di konsol node GNS3 untuk menangkap paket ICMP tanpa GUI, lalu buka file `.pcap` hasilnya di Wireshark komputer host.
 
 ---
 
