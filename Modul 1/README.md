@@ -867,10 +867,13 @@ Hentikan capture dengan `Ctrl + C`. File `.pcap` dapat dibaca kembali di termina
 
 ## 4. Latihan
 
-1. Bangun topologi sederhana (2 node + 1 switch) di GNS3. Lakukan live capture pada link menggunakan fitur **Start capture**, kirim perintah ping antar-node, lalu identifikasi protokol dan opcode yang muncul sebelum balasan ping pertama diterima. Setelah itu, pasang live capture lagi di interface LAN (`eth1`) dan WAN (`eth0`) Router1, lalu ping dari salah satu client ke `8.8.8.8`. Tunjukkan perubahan IP address sumber sebelum dan sesudah melewati NAT, dan jelaskan mengapa perubahan itu terjadi.
-2. Terapkan capture filter BPF yang hanya menangkap lalu lintas data dari salah satu IP node di topologi kalian, lalu bandingkan dengan display filter setara pada hasil capture yang sama tanpa filter — jelaskan perbedaan cara kerja keduanya.
-3. Siapkan server FTP dengan FileZilla Server, rekam proses login dan pengiriman file menggunakan Wireshark, lalu tunjukkan baris paket plaintext yang memuat username, password, dan instruksi transfer file.
-4. Jalankan `tcpdump` atau `tshark` langsung di dalam konsol salah satu node GNS3 untuk menangkap paket ICMP tanpa menggunakan GUI, lalu buka file `.pcap` hasilnya di Wireshark komputer host.
+1. **Analisis ARP & ICMP:** Bangun topologi sederhana (2 node + 1 switch) di GNS3. Lakukan capture pada link, kirim `ping` antar-node, lalu identifikasi protokol dan opcode yang muncul sebelum balasan ping pertama diterima.
+
+2. **Capture Filter:** Terapkan capture filter di Wireshark (bukan menu Packet Filters pada link GNS3) yang hanya menangkap lalu lintas data dari salah satu IP node. Tuliskan sintaks filter yang digunakan.
+
+3. **Dekripsi HTTPS:** Jalankan pengujian HTTPS dengan `SSLKEYLOGFILE` aktif pada browser host (ikuti panduan pada [Subbab 1.6](#16-menangkap-dan-mendekripsi-trafik-httpstls)). Dekripsikan trafiknya di Wireshark dan sebutkan protokol internal yang terlihat di dalam payload setelah didekripsi.
+   
+5. **Inspeksi FTP Plaintext:** Rekam proses login dan pengiriman berkas ke server FTP menggunakan Wireshark, lalu tunjukkan paket plaintext yang memuat username dan password.
 
 ---
 
