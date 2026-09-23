@@ -18,8 +18,7 @@
     - [2.7 Membuat Subdomain](#27-membuat-subdomain)
     - [2.8 DNS Forwarder](#28-dns-forwarder)
   - [3. Keterangan Configurasi Zone file](#3-keterangan-konfigurasi-zone-file)
-  - [4. Latihan Modul 2: DNS Dunia Arda](#4-latihan-modul-2-dns-dunia-arda)
-  - [5. Referensi](#5-referensi)
+  - [4. Referensi](#4-referensi)
 ---
 
 ## 0. Pendahuluan
@@ -617,7 +616,7 @@ listen-on-v6 { any; }
 
 ---
 
-## 5. Referensi
+## 4. Referensi
 * https://computer.howstuffworks.com/dns.htm
 * http://knowledgelayer.softlayer.com/faq/what-does-serial-refresh-retry-expire-minimum-and-ttl-mean
 * https://en.wikipedia.org/wiki/List_of_DNS_record_types
