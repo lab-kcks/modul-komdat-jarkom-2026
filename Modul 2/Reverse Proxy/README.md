@@ -232,6 +232,7 @@ Server `VPC4` menggunakan **Alpinet (Alpine Linux)** yang bertugas memproses log
    ```
    *(Catatan untuk Alpinet: Jalankan daemon `php-fpm82` dan `nginx` secara langsung atau gunakan `rc-service` jika OpenRC aktif).*
 
+
 Cek Hasil Akses Web Dinamis:
 
 
@@ -340,8 +341,9 @@ Reverse Proxy akan memetakan URL dari klien ke server *backend*:
    service nginx restart
    ```
 
-Cek Hasil Basic Authentication:
 
+
+Cek Hasil Basic Authentication:
 
 ![Setup Basic Auth Nginx](img/vpc1_basic_auth_setup.png)
 
@@ -442,8 +444,9 @@ Kita menggunakan node **VPC5** (`10.91.2.4`) yang berjenis **Debinet (Debian)** 
    service nginx restart
    ```
 
-Cek Hasil Akses Web Dinamis:
 
+
+Cek Hasil Akses Web Dinamis:
 
 ![Setup Backend Replika VPC5](img/vpc5_replica_setup.png)
 
@@ -533,11 +536,11 @@ Pengujian dilakukan dari node Client **`VPC2` (Alpinet / Alpine)**. Pastikan fil
    ```
    *Hasil Ekspektasi*: Output akan berganti secara selang-seling antara `Backend Dinamis - VPC4 (Alpine)` dan `Backend Dinamis Replika - VPC5 (Debian)`.
 
+
+
 Hasil Pengujian Rute Statis dan Dinamis
 
-
 ![Pengujian Lynx dan Curl](img/client_curl_static.png)
-
 
 ![Pengujian Lynx dan Curl](img/client_curl_dynamic.png)
 
@@ -557,11 +560,11 @@ Hasil Pengujian Rute Statis dan Dinamis
    ```
    *Hasil Ekspektasi*: Respons **HTTP 200 OK** dan pesan "Area Terproteksi Admin (VPC1)".
 
+
+
 Hasil Pengujian Basic Auth
 
-
 ![Pengujian Basic Auth](img/basic_auth_test.png)
-
 
 ![Pengujian Basic Auth](img/basic_auth_test_success.png)
 ---
