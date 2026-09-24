@@ -27,9 +27,13 @@
   - D. [Reverse Proxy](#d-reverse-proxy)
   - E. [Setup Load Balancing di Nginx](#e-setup-load-balancing-di-nginx)
 
-## A. Persyaratan Tambahan untuk Mengikuti Sesi Lab
+## A. Persyaratan Tambahan untuk Konfigurasi Web Server
 
-Record A dan PTR pada jarkom2022.com sudah harus mengarah ke IP Water7
+Berikut topologi yang digunakan dalam penjelasan modul Web Server.
+
+<img src="images/lb.png" width="700">
+
+Tambahkan Record A dan PTR pada konfigurasi domain yang sudah dibuat sebelumnya. Cntoh dibawah ini domainnya adalah `jarkom2022.com`. 
 
 <img src="images/1.png" width="700">
 <br/>
@@ -38,8 +42,8 @@ Record A dan PTR pada jarkom2022.com sudah harus mengarah ke IP Water7
 ## B. Penting Untuk Dibaca
 
 1. Pastikan semua Node dapat terhubung ke internet, baik dapat melakukan koneksi ke luar maupun dapat ping dari luar
-2. Jangan mencoba untuk mendahului arahan asisten. Kelalaian ditanggung praktikan.
-3. Ketika mengalami kendala/error **cek syntax dan samakan seperti modul** terlebih dahulu. Besar kemungkinan masalah yang terjadi dikarenakan adanya kesalahan dalam pengetikan.
+2. Ketika mengalami kendala/error **cek syntax dan samakan seperti modul** terlebih dahulu. Besar kemungkinan masalah yang terjadi dikarenakan adanya kesalahan dalam pengetikan.
+3. Sebagian besar penjelasan pada modul ini menggunakan base node Debian. 
 
 ## C. Dasar Teori
 
@@ -492,14 +496,7 @@ Masuk ke `/etc/apache2/sites-available` kemudian edit `000-default.conf` tambahk
 </VirtualHost>
 ```
 
-Kemudian `service apache2 start` lalu di load balancer `lynx localhost` untuk mengecek load balancer nya apakah berhasil seperti dibawah
-
-(<![Load Balancing](</Modul-2/Web%20server/images/load%20balancing%20(1).png>)
-)
-
-Tutup lalu buka kembali `lynx localhost`
-
-![Load Balancing](</Modul-2/Web%20server/images/load%20balancing%20(2).png>)
+Kemudian `service apache2 start` lalu di load balancer `lynx localhost` untuk mengecek load balancer nya apakah berhasil.
 
 ## I. Mari Berimajinasi
 
