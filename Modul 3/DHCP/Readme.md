@@ -1,8 +1,49 @@
 # Dynamic Host Configuration Protocol (DHCP)
 
-## 1. Konsep
+## Daftar Isi
 
-### 1.1 Pendahuluan
+- [1. Pendahuluan](#1-pendahuluan)
+  - [1.1 Pendahuluan](#11-pendahuluan)
+  - [1.2 Tujuan Pembelajaran](#12-tujuan-pembelajaran)
+- [2. Dynamic Host Configuration Protocol](#2-dynamic-host-configuration-protocol)
+  - [2.1 Apa itu DHCP?](#21-apa-itu-dhcp)
+  - [2.2 DHCP Server dan DHCP Client](#22-dhcp-server-dan-dhcp-client)
+  - [2.3 DHCP Port](#23-dhcp-port)
+- [3. DHCP DORA](#3-dhcp-dora)
+  - [3.1 Gambaran DORA](#31-gambaran-dora)
+  - [3.2 DHCPDISCOVER](#32-dhcpdiscover)
+  - [3.3 DHCPOFFER](#33-dhcpoffer)
+  - [3.4 DHCPREQUEST](#34-dhcprequest)
+  - [3.5 DHCPACK](#35-dhcpack)
+  - [3.6 DHCPRELEASE](#36-dhcprelease)
+- [4. DHCP Message](#4-dhcp-message)
+- [5. DHCP Options](#5-dhcp-options)
+- [6. DHCP Lease](#6-dhcp-lease)
+- [7. DHCP Server](#7-dhcp-server)
+- [8. DHCP Server Configuration](#8-dhcp-server-configuration)
+- [9. DHCP Client](#9-dhcp-client)
+- [10. DHCP Client Lease](#10-dhcp-client-lease)
+- [11. DHCP Relay](#11-dhcp-relay)
+- [12. DHCP Relay Installation](#12-dhcp-relay-installation)
+- [13. IP Forwarding](#13-ip-forwarding)
+- [14. Fixed Address](#14-fixed-address)
+- [15. Verifikasi DHCP Server](#15-verifikasi-dhcp-server)
+- [16. Packet Capture](#16-packet-capture)
+- [17. Analisis DORA](#17-analisis-dora)
+- [18. Troubleshooting DHCP](#18-troubleshooting-dhcp)
+- [19. Troubleshooting DHCP Relay](#19-troubleshooting-dhcp-relay)
+- [20. Persistence](#20-persistence)
+- [21. Checklist Verifikasi](#21-checklist-verifikasi)
+- [22. Alur Belajar](#22-alur-belajar)
+- [23. Kompetensi yang Harus Dikuasai](#23-kompetensi-yang-harus-dikuasai)
+- [24. Catatan Implementasi](#24-catatan-implementasi)
+- [25. Referensi](#25-referensi)
+
+---
+
+# 1. Pendahuluan
+
+## 1.1 Pendahuluan
 
 Dalam sebuah jaringan komputer, setiap perangkat membutuhkan konfigurasi jaringan agar dapat berkomunikasi dengan perangkat lain. Konfigurasi tersebut dapat dilakukan secara manual, tetapi metode ini menjadi kurang efisien ketika jumlah perangkat bertambah atau perangkat harus berpindah jaringan.
 
@@ -19,9 +60,13 @@ Konfigurasi yang dapat diberikan oleh DHCP antara lain:
 
 Pada praktikum ini, DHCP tidak hanya dipelajari dari sisi instalasi dan konfigurasi. Praktikan juga akan mempelajari proses komunikasi DHCP, lease, DHCP Relay, Fixed Address, packet analysis, troubleshooting, dan persistence.
 
+### Gambaran umum DHCP
+
+![Gambaran DHCP](https://raw.githubusercontent.com/lab-kcks/Modul-Komdat-Jarkom/77d7f496af24869ed9761e20e1c448aca55bec33/Modul-3/DHCP/images/DHCP.png)
+
 ---
 
-### 1.2 Tujuan Pembelajaran
+## 1.2 Tujuan Pembelajaran
 
 Setelah menyelesaikan materi ini, praktikan diharapkan mampu:
 
@@ -41,9 +86,9 @@ Setelah menyelesaikan materi ini, praktikan diharapkan mampu:
 
 ---
 
-## 2. Dynamic Host Configuration Protocol
+# 2. Dynamic Host Configuration Protocol
 
-### 2.1 Apa itu DHCP?
+## 2.1 Apa itu DHCP?
 
 DHCP merupakan protokol client-server yang memungkinkan client memperoleh konfigurasi jaringan secara otomatis dari DHCP Server.
 
@@ -70,15 +115,13 @@ DHCP membuat konfigurasi tersebut dapat diberikan secara otomatis oleh server.
 
 ---
 
-### 2.2 DHCP Server dan DHCP Client
+## 2.2 DHCP Server dan DHCP Client
 
 DHCP menggunakan model client-server.
 
 **DHCP Server** bertugas menyediakan konfigurasi jaringan.
 
 **DHCP Client** meminta konfigurasi jaringan kepada server.
-
-Gambaran sederhananya:
 
 ```text
 DHCP Client
@@ -98,7 +141,7 @@ Kumpulan alamat tersebut disebut sebagai **DHCP Pool** atau **DHCP Range**.
 
 ---
 
-### 2.3 DHCP Port
+## 2.3 DHCP Port
 
 DHCPv4 menggunakan UDP sebagai transport protocol.
 
@@ -107,15 +150,13 @@ DHCP Server : UDP 67
 DHCP Client : UDP 68
 ```
 
-Port tersebut digunakan dalam proses komunikasi antara client dan server.
-
 Pada tahap awal, client belum mengetahui alamat DHCP Server. Oleh karena itu, komunikasi DHCP dapat menggunakan broadcast.
 
 ---
 
-## 3. DHCP DORA
+# 3. DHCP DORA
 
-### 3.1 Gambaran DORA
+## 3.1 Gambaran DORA
 
 Proses paling umum ketika sebuah client pertama kali meminta konfigurasi DHCP dikenal sebagai **DORA**.
 
@@ -131,29 +172,19 @@ DHCPREQUEST
 DHCPACK
 ```
 
+![Alur DORA DHCP](https://raw.githubusercontent.com/lab-kcks/Modul-Komdat-Jarkom/77d7f496af24869ed9761e20e1c448aca55bec33/Modul-3/DHCP/images/cara-kerja.png)
+
 ---
 
-### 3.2 DHCPDISCOVER
+## 3.2 DHCPDISCOVER
 
 Client mengirimkan `DHCPDISCOVER` untuk mencari DHCP Server yang tersedia.
 
 Pada kondisi awal, client belum memiliki konfigurasi IP yang dapat digunakan untuk komunikasi normal.
 
-Gambaran:
-
-```text
-Client
-  |
-  | DHCPDISCOVER
-  v
-Network
-```
-
-Tujuan utama pesan ini adalah memberitahukan bahwa terdapat client yang membutuhkan konfigurasi DHCP.
-
 ---
 
-### 3.3 DHCPOFFER
+## 3.3 DHCPOFFER
 
 DHCP Server menerima `DHCPDISCOVER` dan dapat memberikan penawaran konfigurasi menggunakan `DHCPOFFER`.
 
@@ -167,7 +198,7 @@ Informasi yang dapat ditawarkan antara lain:
 
 ---
 
-### 3.4 DHCPREQUEST
+## 3.4 DHCPREQUEST
 
 Client menerima satu atau lebih penawaran dan memilih konfigurasi yang akan digunakan.
 
@@ -177,7 +208,7 @@ Pesan ini menunjukkan bahwa client meminta konfigurasi tersebut kepada DHCP Serv
 
 ---
 
-### 3.5 DHCPACK
+## 3.5 DHCPACK
 
 DHCP Server memberikan konfirmasi menggunakan `DHCPACK`.
 
@@ -185,17 +216,17 @@ Setelah menerima ACK, client dapat menggunakan konfigurasi jaringan yang diberik
 
 ---
 
-### 3.6 DHCPRELEASE
+## 3.6 DHCPRELEASE
 
 Selain empat pesan utama DORA, terdapat beberapa DHCP message lainnya.
 
 Salah satunya adalah `DHCPRELEASE`.
 
-Pesan ini digunakan client untuk memberitahukan kepada DHCP Server bahwa client tidak lagi menggunakan lease tertentu.
+Pesan ini digunakan client untuk memberitahukan DHCP Server bahwa client tidak lagi menggunakan lease tertentu.
 
 ---
 
-## 4. DHCP Message
+# 4. DHCP Message
 
 DHCP Message memiliki beberapa field yang digunakan untuk mengidentifikasi dan mengatur proses komunikasi DHCP.
 
@@ -210,6 +241,8 @@ Beberapa informasi yang penting untuk dipahami:
 - Subnet Mask
 - Router
 - Domain Name Server
+
+![DHCP Message Header](https://raw.githubusercontent.com/lab-kcks/Modul-Komdat-Jarkom/77d7f496af24869ed9761e20e1c448aca55bec33/Modul-3/DHCP/images/DHCP-message-header.png)
 
 Saat melakukan analisis packet, praktikan tidak cukup hanya melihat nama packet.
 
@@ -226,9 +259,11 @@ DHCP Options
 
 Informasi tersebut dapat digunakan untuk mengikuti satu proses DHCP dari awal hingga selesai.
 
+![Keterangan DHCP Message Header](https://raw.githubusercontent.com/lab-kcks/Modul-Komdat-Jarkom/77d7f496af24869ed9761e20e1c448aca55bec33/Modul-3/DHCP/images/DHCP-message-header-keterangan.png)
+
 ---
 
-## 5. DHCP Options
+# 5. DHCP Options
 
 DHCP dapat memberikan konfigurasi tambahan melalui DHCP Options.
 
@@ -240,19 +275,11 @@ Beberapa option yang umum digunakan:
 option subnet-mask <NETMASK>;
 ```
 
-Digunakan untuk memberikan subnet mask kepada client.
-
----
-
 ### 5.2 Default Gateway
 
 ```conf
 option routers <GATEWAY>;
 ```
-
-Digunakan untuk menentukan default gateway client.
-
----
 
 ### 5.3 DNS Server
 
@@ -260,13 +287,7 @@ Digunakan untuk menentukan default gateway client.
 option domain-name-servers <DNS-SERVER>;
 ```
 
-Digunakan untuk memberikan alamat DNS Server kepada client.
-
----
-
 ### 5.4 Lease Time
-
-Lease time juga dapat dikonfigurasi melalui:
 
 ```conf
 default-lease-time <SECONDS>;
@@ -293,9 +314,9 @@ Nilai tersebut hanya digunakan sebagai contoh pemahaman sintaks. Parameter seben
 
 ---
 
-## 6. DHCP Lease
+# 6. DHCP Lease
 
-### 6.1 Pengertian Lease
+## 6.1 Pengertian Lease
 
 DHCP tidak selalu memberikan IP Address secara permanen.
 
@@ -307,11 +328,9 @@ Ketika lease mendekati masa berakhir, client dapat melakukan proses renewal untu
 
 ---
 
-### 6.2 Default Lease Time
+## 6.2 Default Lease Time
 
 `default-lease-time` menentukan lease time default yang diberikan kepada client.
-
-Contoh:
 
 ```conf
 default-lease-time <SECONDS>;
@@ -319,11 +338,9 @@ default-lease-time <SECONDS>;
 
 ---
 
-### 6.3 Maximum Lease Time
+## 6.3 Maximum Lease Time
 
 `max-lease-time` menentukan batas maksimum lease.
-
-Contoh:
 
 ```conf
 max-lease-time <SECONDS>;
@@ -345,9 +362,9 @@ Batas maksimum lease
 
 ---
 
-## 7. DHCP Server
+# 7. DHCP Server
 
-### 7.1 Instalasi
+## 7.1 Instalasi
 
 Pada environment Debian-based, DHCP Server dapat dipasang menggunakan:
 
@@ -364,8 +381,6 @@ Setelah instalasi, beberapa file penting yang perlu diketahui adalah:
 /var/lib/dhcp/dhcpd.leases
 ```
 
-Fungsi masing-masing:
-
 | File | Fungsi |
 |---|---|
 | `/etc/dhcp/dhcpd.conf` | Konfigurasi utama DHCP Server |
@@ -374,7 +389,7 @@ Fungsi masing-masing:
 
 ---
 
-### 7.2 Menentukan Interface
+## 7.2 Menentukan Interface
 
 DHCP Server harus mengetahui interface yang digunakan untuk melayani client.
 
@@ -392,8 +407,6 @@ eth1
 eth2
 ```
 
-Interface yang digunakan DHCP harus disesuaikan dengan topologi.
-
 Contoh struktur konfigurasi:
 
 ```conf
@@ -404,9 +417,9 @@ Jangan menggunakan contoh tersebut secara langsung sebelum memastikan interface 
 
 ---
 
-## 8. DHCP Server Configuration
+# 8. DHCP Server Configuration
 
-### 8.1 Konfigurasi Subnet
+## 8.1 Konfigurasi Subnet
 
 Konfigurasi DHCP Server berada pada:
 
@@ -448,11 +461,9 @@ DHCP Range harus berada pada jaringan yang sesuai dengan deklarasi subnet.
 
 ---
 
-### 8.2 DHCP Range
+## 8.2 DHCP Range
 
 `range` menentukan kumpulan IP Address yang dapat dialokasikan secara dinamis kepada client.
-
-Contoh:
 
 ```conf
 range <START-IP> <END-IP>;
@@ -468,7 +479,7 @@ Sebelum menentukan range, pastikan:
 
 ---
 
-### 8.3 Gateway
+## 8.3 Gateway
 
 Gateway diberikan menggunakan:
 
@@ -480,7 +491,7 @@ Gateway harus mengarah pada alamat router yang dapat digunakan client untuk kelu
 
 ---
 
-### 8.4 DNS
+## 8.4 DNS
 
 DNS Server diberikan menggunakan:
 
@@ -492,7 +503,7 @@ Kesalahan DNS dapat menyebabkan client berhasil mendapatkan IP tetapi tidak dapa
 
 ---
 
-## 9. DHCP Client
+# 9. DHCP Client
 
 Client harus dikonfigurasi agar dapat memperoleh IP Address dari DHCP Server.
 
@@ -506,15 +517,10 @@ iface eth0 inet dhcp
 
 Sesuaikan interface dengan topologi.
 
-Setelah konfigurasi diterapkan, periksa:
+Setelah konfigurasi diterapkan:
 
 ```bash
 ip addr
-```
-
-Kemudian:
-
-```bash
 ip route
 ```
 
@@ -531,9 +537,7 @@ Mendapatkan IP Address saja belum cukup untuk menyatakan DHCP telah dikonfiguras
 
 ---
 
-## 10. DHCP Client Lease
-
-Pada sisi client, informasi mengenai lease dapat diperiksa sesuai mekanisme DHCP client yang digunakan.
+# 10. DHCP Client Lease
 
 Pada sisi server, informasi lease dapat dilihat melalui:
 
@@ -556,39 +560,31 @@ Informasi lease dapat membantu ketika ingin mengetahui:
 
 ---
 
-## 11. DHCP Relay
+# 11. DHCP Relay
 
-### 11.1 Mengapa DHCP Relay Dibutuhkan?
+## 11.1 Mengapa DHCP Relay Dibutuhkan?
 
 DHCP pada tahap awal menggunakan broadcast.
 
 Broadcast tidak secara otomatis diteruskan oleh router ke subnet lain.
 
-Contoh:
-
 ```text
 DHCP Client
 192.168.2.0/24
        |
-       |
      Router
-       |
        |
 DHCP Server
 192.168.1.0/24
 ```
 
-Client dan DHCP Server berada pada subnet yang berbeda.
-
 Agar request DHCP dapat mencapai server, digunakan DHCP Relay.
+
+![DHCP Relay](https://raw.githubusercontent.com/lab-kcks/Modul-Komdat-Jarkom/77d7f496af24869ed9761e20e1c448aca55bec33/Modul-3/DHCP/images/relay.png)
 
 ---
 
-### 11.2 Cara Kerja DHCP Relay
-
-DHCP Relay menerima DHCP request dari client kemudian meneruskannya menuju DHCP Server.
-
-Gambaran:
+## 11.2 Cara Kerja DHCP Relay
 
 ```text
 Client
@@ -613,7 +609,7 @@ DHCP Relay memungkinkan satu DHCP Server melayani beberapa subnet.
 
 ---
 
-## 12. DHCP Relay Installation
+# 12. DHCP Relay Installation
 
 Pada Debian-based environment:
 
@@ -622,9 +618,7 @@ apt update
 apt install isc-dhcp-relay
 ```
 
-Konfigurasi relay menyesuaikan interface dan DHCP Server yang digunakan.
-
-Contoh struktur:
+Contoh struktur konfigurasi:
 
 ```conf
 SERVERS="<DHCP-SERVER-IP>"
@@ -640,7 +634,7 @@ Pastikan:
 
 ---
 
-## 13. IP Forwarding
+# 13. IP Forwarding
 
 Router atau relay yang menghubungkan jaringan berbeda harus dapat meneruskan packet.
 
@@ -676,17 +670,13 @@ Untuk konfigurasi persisten, parameter dapat disimpan pada:
 /etc/sysctl.conf
 ```
 
-Kemudian konfigurasi diterapkan kembali sesuai mekanisme sistem.
-
 ---
 
-## 14. Fixed Address
+# 14. Fixed Address
 
 Tidak semua client harus mendapatkan IP secara dinamis.
 
 DHCP juga dapat memberikan IP tertentu kepada client berdasarkan MAC Address.
-
-Konsep:
 
 ```text
 MAC Address
@@ -717,59 +707,43 @@ Fixed Address
 DHCP Server menentukan IP berdasarkan identitas client
 ```
 
-Dengan fixed address, client tetap menggunakan DHCP untuk memperoleh konfigurasi, tetapi alamat yang diterima dapat ditentukan sebelumnya oleh administrator.
-
 ---
 
-## 15. Verifikasi DHCP Server
+# 15. Verifikasi DHCP Server
 
-### 15.1 Memeriksa Interface
+## 15.1 Memeriksa Interface
 
 ```bash
 ip addr
 ```
 
-Pastikan interface:
-
-- Aktif.
-- Memiliki IP yang sesuai.
-- Terhubung ke jaringan yang benar.
-
----
-
-### 15.2 Memeriksa Routing
+## 15.2 Memeriksa Routing
 
 ```bash
 ip route
 ```
 
-Periksa default route serta route jaringan internal.
-
----
-
-### 15.3 Memeriksa Service
+## 15.3 Memeriksa Service
 
 ```bash
 systemctl status isc-dhcp-server
 ```
 
-Untuk pemeriksaan singkat:
+Pemeriksaan singkat:
 
 ```bash
 systemctl is-active isc-dhcp-server
 ```
 
-Untuk mengetahui apakah service aktif ketika boot:
+Periksa status enable:
 
 ```bash
 systemctl is-enabled isc-dhcp-server
 ```
 
----
+## 15.4 Memeriksa Konfigurasi
 
-### 15.4 Memeriksa Konfigurasi
-
-Sebelum melakukan restart service, periksa konfigurasi:
+Sebelum restart service:
 
 ```bash
 dhcpd -t
@@ -777,29 +751,25 @@ dhcpd -t
 
 Jika ditemukan error, perbaiki konfigurasi terlebih dahulu.
 
-Jangan melanjutkan pengujian hanya dengan asumsi bahwa konfigurasi sudah benar.
-
 ---
 
-## 16. Packet Capture
+# 16. Packet Capture
 
-### 16.1 tcpdump
+## 16.1 tcpdump
 
-DHCP dapat diamati menggunakan `tcpdump`.
+Gunakan:
 
 ```bash
 tcpdump -i <INTERFACE> -n port 67 or port 68
 ```
 
-Filter tersebut digunakan untuk melihat traffic DHCP pada UDP port 67 dan 68.
+Perintah tersebut digunakan untuk melihat traffic DHCP pada UDP port 67 dan 68.
 
 ---
 
-### 16.2 Wireshark
+## 16.2 Wireshark
 
-Capture packet dapat dianalisis menggunakan Wireshark.
-
-Filter yang dapat digunakan:
+Filter:
 
 ```text
 dhcp
@@ -811,11 +781,11 @@ atau:
 bootp
 ```
 
-Karena DHCP menggunakan format message yang berasal dari BOOTP, Wireshark dapat menampilkan packet DHCP menggunakan protocol tree BOOTP/DHCP.
+Gunakan filter tersebut untuk mempermudah analisis packet DHCP.
 
 ---
 
-## 17. Analisis DORA
+# 17. Analisis DORA
 
 Saat melakukan capture, identifikasi:
 
@@ -831,40 +801,21 @@ DHCPACK
 
 Perhatikan:
 
-### DHCPDISCOVER
-
-Client mencari DHCP Server.
-
-### DHCPOFFER
-
-Server menawarkan konfigurasi.
-
-### DHCPREQUEST
-
-Client memilih dan meminta konfigurasi.
-
-### DHCPACK
-
-Server mengonfirmasi konfigurasi.
-
-Selain message type, perhatikan juga:
-
-- Transaction ID.
-- Client MAC Address.
-- Requested IP Address.
-- Server Identifier.
-- Lease Time.
-- DHCP Options.
+- Message Type
+- Transaction ID
+- Client MAC Address
+- Requested IP Address
+- Server Identifier
+- Lease Time
+- DHCP Options
 
 Transaction ID dapat digunakan untuk menghubungkan packet yang berasal dari proses DHCP yang sama.
 
 ---
 
-## 18. Troubleshooting DHCP
+# 18. Troubleshooting DHCP
 
-Ketika client tidak mendapatkan IP Address, jangan langsung mengganti konfigurasi secara acak.
-
-Gunakan urutan pemeriksaan berikut:
+Ketika client tidak mendapatkan IP Address, gunakan urutan pemeriksaan berikut:
 
 ```text
 Client tidak mendapat IP
@@ -897,41 +848,25 @@ Capture Packet
 Analisis DORA
 ```
 
----
-
 ### 18.1 Interface
-
-Periksa:
 
 ```bash
 ip link
 ```
 
-Pastikan interface berada dalam kondisi aktif.
-
----
-
 ### 18.2 IP Server
-
-Periksa:
 
 ```bash
 ip addr
 ```
 
-Pastikan server berada pada jaringan yang benar.
-
----
-
 ### 18.3 DHCP Configuration
-
-Periksa konfigurasi:
 
 ```bash
 dhcpd -t
 ```
 
-Kemudian periksa kembali:
+Periksa kembali:
 
 ```text
 Network
@@ -942,29 +877,19 @@ DNS
 Lease Time
 ```
 
----
-
 ### 18.4 DHCP Service
-
-Periksa:
 
 ```bash
 systemctl status isc-dhcp-server
 ```
 
-Perhatikan error yang diberikan service.
-
----
-
 ### 18.5 Packet Capture
-
-Jika konfigurasi terlihat benar tetapi client tetap tidak mendapatkan IP, lakukan packet capture.
 
 ```bash
 tcpdump -i <INTERFACE> -n port 67 or port 68
 ```
 
-Kemudian jawab pertanyaan berikut:
+Pertanyaan yang harus dijawab:
 
 ```text
 Apakah DHCPDISCOVER muncul?
@@ -976,13 +901,11 @@ Apakah DHCPREQUEST muncul?
 Apakah DHCPACK muncul?
 ```
 
-Dari urutan tersebut, titik kegagalan dapat dipersempit.
-
 ---
 
-## 19. Troubleshooting DHCP Relay
+# 19. Troubleshooting DHCP Relay
 
-Jika menggunakan DHCP Relay, periksa komunikasi pada setiap bagian:
+Periksa komunikasi pada setiap bagian:
 
 ```text
 Client
@@ -1009,23 +932,15 @@ Periksa IP forwarding:
 sysctl net.ipv4.ip_forward
 ```
 
-Periksa konfigurasi relay dan pastikan alamat server benar.
+Periksa konfigurasi relay dan alamat DHCP Server.
 
-Packet capture dapat dilakukan pada:
-
-- Sisi client.
-- Sisi relay.
-- Sisi server.
-
-Tujuannya adalah mengetahui apakah packet berhenti di client, relay, atau server.
+Lakukan packet capture pada sisi yang diperlukan untuk menentukan titik berhentinya packet.
 
 ---
 
-## 20. Persistence
+# 20. Persistence
 
-Konfigurasi yang berhasil sebelum restart belum tentu tetap berjalan setelah node melakukan restart.
-
-Service DHCP harus diatur agar berjalan secara otomatis.
+Service DHCP harus tetap berjalan setelah node melakukan restart.
 
 Periksa:
 
@@ -1039,26 +954,24 @@ Jika belum aktif:
 systemctl enable isc-dhcp-server
 ```
 
-Setelah melakukan restart, periksa:
+Setelah restart:
 
 ```bash
 systemctl status isc-dhcp-server
 ```
 
-Kemudian lakukan pengujian ulang pada client:
+Kemudian pada client:
 
 ```bash
 ip addr
 ip route
 ```
 
-Jika menggunakan DHCP Relay, periksa juga service relay setelah restart.
+Jika menggunakan DHCP Relay, periksa juga service relay.
 
 ---
 
-## 21. Checklist Verifikasi
-
-Gunakan checklist berikut selama proses pengerjaan:
+# 21. Checklist Verifikasi
 
 | Komponen | Perintah / Metode |
 |---|---|
@@ -1080,9 +993,7 @@ Gunakan checklist berikut selama proses pengerjaan:
 
 ---
 
-## 22. Alur Belajar
-
-Urutan pembelajaran DHCP pada praktikum ini adalah:
+# 22. Alur Belajar
 
 ```text
 DHCP Concept
@@ -1112,11 +1023,11 @@ Troubleshooting
 Persistence
 ```
 
-Praktikan disarankan memahami setiap tahap sebelum melanjutkan ke tahap berikutnya.
+Urutan ini dirancang dari konfigurasi dasar menuju analisis, troubleshooting, dan persistence.
 
 ---
 
-## 23. Kompetensi yang Harus Dikuasai
+# 23. Kompetensi yang Harus Dikuasai
 
 Setelah menyelesaikan materi ini, praktikan setidaknya harus mampu:
 
@@ -1146,7 +1057,7 @@ Setelah menyelesaikan materi ini, praktikan setidaknya harus mampu:
 - Menemukan DORA pada Wireshark.
 - Mengidentifikasi Client MAC Address.
 - Mengidentifikasi IP Address yang ditawarkan.
-- Mengidentifikasi server DHCP.
+- Mengidentifikasi DHCP Server.
 - Membaca DHCP Options.
 
 ### Troubleshooting
@@ -1168,9 +1079,9 @@ Setelah menyelesaikan materi ini, praktikan setidaknya harus mampu:
 
 ---
 
-## 24. Catatan Implementasi
+# 24. Catatan Implementasi
 
-Contoh konfigurasi pada materi ini menggunakan placeholder seperti:
+Contoh konfigurasi menggunakan placeholder:
 
 ```text
 <NETWORK>
@@ -1184,7 +1095,7 @@ Contoh konfigurasi pada materi ini menggunakan placeholder seperti:
 <DHCP-SERVER-IP>
 ```
 
-Placeholder tersebut sengaja digunakan agar praktikan memahami hubungan antarparameter tanpa bergantung pada satu konfigurasi tertentu.
+Placeholder digunakan agar praktikan memahami hubungan antarparameter tanpa bergantung pada satu konfigurasi tertentu.
 
 Sebelum melakukan konfigurasi, tentukan terlebih dahulu:
 
@@ -1199,31 +1110,53 @@ Sebelum melakukan konfigurasi, tentukan terlebih dahulu:
 9. Lease Time.
 10. MAC Address untuk Fixed Address.
 
-Jangan menentukan nilai secara acak. Setiap parameter harus sesuai dengan topologi dan kebutuhan jaringan.
+Setiap parameter harus sesuai dengan topologi dan kebutuhan jaringan.
 
 ---
 
-## 25. Referensi
+# 25. Referensi
 
-1. R. Droms, **RFC 2131: Dynamic Host Configuration Protocol**  
+1. **RFC 2131: Dynamic Host Configuration Protocol**  
    https://www.rfc-editor.org/rfc/rfc2131
 
-2. S. Alexander dan R. Droms, **RFC 2132: DHCP Options and BOOTP Vendor Extensions**  
+2. **RFC 2132: DHCP Options and BOOTP Vendor Extensions**  
    https://www.rfc-editor.org/rfc/rfc2132
 
-3. Internet Systems Consortium, **ISC DHCP**  
+3. **Internet Systems Consortium: ISC DHCP**  
    https://www.isc.org/dhcp/
 
-4. Internet Systems Consortium, **ISC DHCP End of Life Dates**  
+4. **ISC DHCP End of Life Dates**  
    https://kb.isc.org/docs/isc-dhcp-eol-dates
 
-5. Internet Systems Consortium, **Kea DHCP**  
+5. **Internet Systems Consortium: Kea DHCP**  
    https://www.isc.org/kea/
+
+6. **Wireshark Wiki: Dynamic Host Configuration Protocol**  
+   https://wiki.wireshark.org/DHCP
 
 ---
 
-## 26. Catatan
+## Catatan untuk Repository
 
-Materi ini digunakan sebagai panduan pembelajaran dan implementasi DHCP pada praktikum Komunikasi Data dan Jaringan Komputer.
+Simpan file ini pada:
 
-Praktikan tetap harus memahami setiap konfigurasi yang dibuat, melakukan verifikasi, dan mampu menjelaskan hasil konfigurasi pada saat demo.
+```text
+Modul 3/
+└── DHCP/
+    ├── README.md
+    └── images/
+        ├── DHCP.png
+        ├── DHCP.gif
+        ├── DHCP-message-header.png
+        ├── DHCP-message-header-keterangan.png
+        ├── cara-kerja.png
+        └── relay.png
+```
+
+Apabila gambar disalin ke repository 2026, ubah referensi gambar pada README menjadi path relatif seperti:
+
+```markdown
+![Gambaran DHCP](./images/DHCP.png)
+```
+
+Dengan cara tersebut, gambar tidak bergantung pada repository 2025.
