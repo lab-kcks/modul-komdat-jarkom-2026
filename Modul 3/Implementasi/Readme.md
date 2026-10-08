@@ -1035,3 +1035,65 @@ DHCP Server aldarion
 
 ---
 
+# 14. Soal Latihan
+
+Kerjakan seluruh soal berikut menggunakan topologi DHCP yang telah dibuat.
+
+### Soal 1 — DHCP Client
+
+Konfigurasikan `alpha` sebagai DHCP Client dan pastikan memperoleh IP dari `aldarion`.
+
+Buktikan dengan:
+
+```bash
+ip a
+ip route
+```
+
+### Soal 2 — DHCP Relay
+
+Konfigurasikan `gamma` agar memperoleh IP melalui DHCP Relay `suki`.
+
+Pastikan `gamma` mendapatkan IP dari subnet `10.40.2.0/24` dengan gateway `10.40.2.1`.
+
+Buktikan dengan:
+
+```bash
+ip a
+ip route
+```
+
+### Soal 3 — Lease Time
+
+Pada `aldarion`, ubah `default-lease-time` menjadi `300` detik dan `max-lease-time` menjadi `600` detik.
+
+Validasi konfigurasi, restart DHCP Server, lalu lakukan renew DHCP pada `gamma`.
+
+Tunjukkan hasil konfigurasi dan IP yang diperoleh `gamma`.
+
+### Soal 4 — Fixed Address
+
+Konfigurasikan `gamma` agar selalu mendapatkan IP `10.40.2.50` berdasarkan MAC Address-nya.
+
+Lakukan renew DHCP dan buktikan bahwa `gamma` memperoleh IP tersebut.
+
+### Soal 5 — DHCP DORA
+
+Lakukan capture DHCP pada `gamma` menggunakan `tcpdump`.
+
+Tunjukkan proses:
+
+```text
+DHCPDISCOVER
+DHCPOFFER
+DHCPREQUEST
+DHCPACK
+```
+
+### Soal 6 — Troubleshooting DHCP Relay
+
+Matikan DHCP Relay pada `suki`, lalu uji kembali DHCP pada `gamma`.
+
+Setelah itu aktifkan kembali DHCP Relay dan pastikan `gamma` kembali memperoleh IP melalui DHCP.
+
+Tunjukkan kondisi sebelum dan setelah perbaikan.
