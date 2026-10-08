@@ -534,8 +534,7 @@ auto eth0
 iface eth0 inet dhcp
 ```
 
-![Konfigurasi DHCP Client](<img width="1104" height="341" alt="image" src="https://github.com/user-attachments/assets/278524a1-7fcb-4935-bdac-f2459363ef31" />
-)
+![Konfigurasi DHCP Client](https://github.com/user-attachments/assets/278524a1-7fcb-4935-bdac-f2459363ef31)
 
 Kemudian:
 
@@ -964,7 +963,7 @@ ip route
 
 Client harus kembali memperoleh konfigurasi DHCP.
 
-![Persistence DHCP](<img width="1165" height="615" alt="image" src="https://github.com/user-attachments/assets/664a6089-5dd9-4bd8-b60e-90348e65c424" />)
+![Persistence DHCP](https://github.com/user-attachments/assets/664a6089-5dd9-4bd8-b60e-90348e65c424)
 
 
 ---
