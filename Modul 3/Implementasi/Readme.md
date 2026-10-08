@@ -24,7 +24,8 @@ Topologi ini dibuat untuk mempraktikkan dua skenario DHCP:
 
 Buat topologi berikut pada GNS3.
 
-![Topologi GNS3 Modul 3 DHCP](../images/01_topologi_gns3_dhcp.png)
+<img width="794" height="428" alt="image" src="https://github.com/user-attachments/assets/f70e8180-d866-458a-abc2-65425cf98c38" />
+
 
 Topologi terdiri dari:
 
@@ -124,7 +125,8 @@ iface eth2 inet static
     netmask 255.255.255.0
 ```
 
-![Konfigurasi Interface suki](../images/02_suki_interfaces_ubuntu.png)
+![Konfigurasi Interface suki](<img width="683" height="447" alt="image" src="https://github.com/user-attachments/assets/0a136b82-645b-4bc9-9858-408e9549f6fb" />
+)
 
 > Jangan mengubah konfigurasi `eth0` menjadi static jika interface tersebut digunakan untuk mendapatkan koneksi dari NAT GNS3. Sesuaikan dengan environment node yang digunakan.
 
@@ -240,7 +242,8 @@ Verifikasi:
 dhcpd --version
 ```
 
-![Instalasi dan Konfigurasi DHCP Server](../images/03_dhcp_server_ubuntu.png)
+![Instalasi dan Konfigurasi DHCP Server](<img width="694" height="453" alt="image" src="https://github.com/user-attachments/assets/3344509c-65f6-4053-b4dd-572969f23607" />
+)
 
 ---
 
@@ -332,7 +335,8 @@ Periksa:
 service isc-dhcp-server status
 ```
 
-![Validasi DHCP Server](../images/04_dhcp_validate_ubuntu.png)
+![Validasi DHCP Server](<img width="692" height="450" alt="image" src="https://github.com/user-attachments/assets/351d19d9-7054-4dff-ba24-ea246a854b4a" />
+)
 
 Periksa juga apakah service diaktifkan saat boot:
 
@@ -474,7 +478,8 @@ eth1 -> Network 1 / DHCP Server
 eth2 -> Network 2 / DHCP Client
 ```
 
-![Konfigurasi DHCP Relay](../images/05_dhcp_relay_ubuntu.png)
+![Konfigurasi DHCP Relay](<img width="1107" height="882" alt="image" src="https://github.com/user-attachments/assets/f13fe04d-f949-4bf5-a2ad-6e544147a1d7" />
+)
 
 ---
 
@@ -491,6 +496,7 @@ service isc-dhcp-relay status
 ```
 
 ---
+<img width="766" height="206" alt="image" src="https://github.com/user-attachments/assets/74dfa9b8-a89f-4870-825e-0ba3dc765cc9" />
 
 ## 5.4 Periksa IP Forwarding
 
@@ -529,7 +535,7 @@ auto eth0
 iface eth0 inet dhcp
 ```
 
-![Konfigurasi DHCP Client](../images/06_client_dhcp_ubuntu.png)
+![Konfigurasi DHCP Client]()
 
 Kemudian:
 
@@ -598,6 +604,7 @@ ip route
 ```
 
 ---
+<img width="1015" height="841" alt="image" src="https://github.com/user-attachments/assets/7e972fc3-c55e-4e82-9c50-5386b54bbef5" />
 
 # 7. Mengatur Lease Time
 
@@ -730,7 +737,8 @@ DHCPREQUEST
 DHCPACK
 ```
 
-![Analisis DHCP DORA](../images/07_dora_ubuntu.png)
+![Analisis DHCP DORA](<img width="1068" height="711" alt="image" src="https://github.com/user-attachments/assets/fb2a278b-44cd-47cc-8f84-68e267fe1dfc" />
+)
 
 ---
 
@@ -958,7 +966,8 @@ ip route
 
 Client harus kembali memperoleh konfigurasi DHCP.
 
-![Persistence DHCP](../images/09_persistence_ubuntu.png)
+![Persistence DHCP](<img width="1002" height="615" alt="image" src="https://github.com/user-attachments/assets/ce40da31-3865-4081-a0bf-01d25c45c885" />
+)
 
 ---
 
