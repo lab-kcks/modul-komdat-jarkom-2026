@@ -337,9 +337,7 @@ Periksa:
 service isc-dhcp-server status
 ```
 
-![Validasi DHCP Server](<img width="829" height="467" alt="image" src="https://github.com/user-attachments/assets/4c647426-c813-4473-9607-89c6a020a30d" />
-)
-
+![Validasi DHCP Server](https://github.com/user-attachments/assets/4c647426-c813-4473-9607-89c6a020a30d)
 Periksa juga apakah service diaktifkan saat boot:
 
 ```bash
