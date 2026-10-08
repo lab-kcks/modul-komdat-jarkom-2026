@@ -1039,7 +1039,7 @@ DHCP Server aldarion
 
 Kerjakan seluruh soal berikut menggunakan topologi DHCP yang telah dibuat.
 
-### Soal 1 — DHCP Client
+### Soal 1  DHCP Client
 
 Konfigurasikan `alpha` sebagai DHCP Client dan pastikan memperoleh IP dari `aldarion`.
 
@@ -1050,7 +1050,7 @@ ip a
 ip route
 ```
 
-### Soal 2 — DHCP Relay
+### Soal 2  DHCP Relay
 
 Konfigurasikan `gamma` agar memperoleh IP melalui DHCP Relay `suki`.
 
@@ -1063,7 +1063,7 @@ ip a
 ip route
 ```
 
-### Soal 3 — Lease Time
+### Soal 3  Lease Time
 
 Pada `aldarion`, ubah `default-lease-time` menjadi `300` detik dan `max-lease-time` menjadi `600` detik.
 
@@ -1090,7 +1090,7 @@ DHCPREQUEST
 DHCPACK
 ```
 
-### Soal 6 — Troubleshooting DHCP Relay
+### Soal 6  Troubleshooting DHCP Relay
 
 Matikan DHCP Relay pada `suki`, lalu uji kembali DHCP pada `gamma`.
 
