@@ -243,7 +243,8 @@ Verifikasi:
 dhcpd --version
 ```
 
-![Instalasi dan Konfigurasi DHCP Server](<img width="694" height="453" alt="image" src="https://github.com/user-attachments/assets/3344509c-65f6-4053-b4dd-572969f23607" />
+![Instalasi dan Konfigurasi DHCP Server](<img width="746" height="363" alt="image" src="https://github.com/user-attachments/assets/0ea6c224-ab35-4e36-9387-69dc894b9568" />
+
 )
 
 ---
@@ -336,7 +337,7 @@ Periksa:
 service isc-dhcp-server status
 ```
 
-![Validasi DHCP Server](<img width="692" height="450" alt="image" src="https://github.com/user-attachments/assets/351d19d9-7054-4dff-ba24-ea246a854b4a" />
+![Validasi DHCP Server](<img width="729" height="469" alt="image" src="https://github.com/user-attachments/assets/6ef44349-2278-4b58-98f6-3255abce399d" />
 )
 
 Periksa juga apakah service diaktifkan saat boot:
