@@ -534,7 +534,8 @@ auto eth0
 iface eth0 inet dhcp
 ```
 
-![Konfigurasi DHCP Client]()
+![Konfigurasi DHCP Client](<img width="1104" height="341" alt="image" src="https://github.com/user-attachments/assets/278524a1-7fcb-4935-bdac-f2459363ef31" />
+)
 
 Kemudian:
 
@@ -736,8 +737,7 @@ DHCPREQUEST
 DHCPACK
 ```
 
-![Analisis DHCP DORA](<img width="1068" height="711" alt="image" src="https://github.com/user-attachments/assets/fb2a278b-44cd-47cc-8f84-68e267fe1dfc" />
-)
+![Konfigurasi DHCP Client](https://github.com/user-attachments/assets/278524a1-7fcb-4935-bdac-f2459363ef31)
 
 ---
 
