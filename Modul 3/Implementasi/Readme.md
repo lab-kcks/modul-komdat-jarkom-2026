@@ -478,8 +478,7 @@ eth1 -> Network 1 / DHCP Server
 eth2 -> Network 2 / DHCP Client
 ```
 
-![Konfigurasi DHCP Relay](<img width="1107" height="882" alt="image" src="https://github.com/user-attachments/assets/f13fe04d-f949-4bf5-a2ad-6e544147a1d7" />
-)
+![Konfigurasi DHCP Relay](https://github.com/user-attachments/assets/a3fd1206-92de-424c-b380-f10f24cd1d09)
 
 ---
 
