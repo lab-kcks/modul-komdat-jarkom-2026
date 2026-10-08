@@ -712,34 +712,33 @@ Letakkan pada `/etc/network/interfaces`.
 
 ---
 
-# 9. Analisis DHCP Packet
+## 9. Analisis DHCP Packet
 
-Konfigurasi DHCP sebaiknya tidak hanya diuji dari IP address.
+Konfigurasi DHCP tidak hanya diverifikasi dari alamat IP yang diperoleh client. Komunikasi DHCP juga dapat diamati untuk memastikan proses pemberian alamat berjalan melalui tahapan DORA.
 
-Praktikan juga perlu melihat komunikasi DHCP yang terjadi di jaringan.
+### 9.1 Analisis DHCP DORA
 
-## 9.1 Menggunakan tcpdump
+Pada client `gamma`, lakukan capture DHCP untuk melihat proses DORA.
 
-Pada client atau interface yang sesuai:
+Jalankan:
 
-```bash
-tcpdump -i eth0 -n 'port 67 or port 68'
 ```
-
-Kemudian lakukan renew DHCP.
-
-Contoh alur:
-
-```text
-DHCPDISCOVER
-DHCPOFFER
-DHCPREQUEST
-DHCPACK
+bash
+ip addr flush dev eth0 && \
+ip link set eth0 up && \
+tcpdump -i eth0 -n -c 4 -vvv 'udp port 67 or udp port 68' > /tmp/dhcp-dora.txt 2>&1 & \
+TCPDUMP_PID=$! && \
+sleep 2 && \
+udhcpc -i eth0 -n -q >/dev/null 2>&1 && \
+wait $TCPDUMP_PID && \
+echo "===== DHCP DORA =====" && \
+cat /tmp/dhcp-dora.txt
 ```
 
 ![Konfigurasi DHCP Client](https://github.com/user-attachments/assets/278524a1-7fcb-4935-bdac-f2459363ef31)
 
 ---
+<img width="1593" height="911" alt="image" src="https://github.com/user-attachments/assets/63129469-76c3-4ff5-803b-1d75ae3984b9" />
 
 ## 9.2 Analisis Wireshark
 
@@ -965,8 +964,8 @@ ip route
 
 Client harus kembali memperoleh konfigurasi DHCP.
 
-![Persistence DHCP](<img width="1002" height="615" alt="image" src="https://github.com/user-attachments/assets/ce40da31-3865-4081-a0bf-01d25c45c885" />
-)
+![Persistence DHCP](<img width="1165" height="615" alt="image" src="https://github.com/user-attachments/assets/664a6089-5dd9-4bd8-b60e-90348e65c424" />)
+
 
 ---
 
@@ -1037,53 +1036,3 @@ DHCP Server aldarion
 
 ---
 
-# 14. Checklist Praktikan
-
-Sebelum menyatakan implementasi DHCP selesai, pastikan:
-
-- [ ] Topologi GNS3 sesuai.
-- [ ] `suki` dapat mengakses internet.
-- [ ] `suki` memiliki IP pada kedua subnet.
-- [ ] IP forwarding aktif.
-- [ ] `aldarion` memiliki IP statis.
-- [ ] `isc-dhcp-server` terinstall.
-- [ ] Interface DHCP Server sudah benar.
-- [ ] DHCP Pool sudah benar.
-- [ ] Gateway sudah benar.
-- [ ] DNS sudah benar.
-- [ ] Lease Time sudah dikonfigurasi.
-- [ ] `alpha` memperoleh IP DHCP.
-- [ ] `beta` memperoleh IP DHCP.
-- [ ] DHCP Relay terinstall pada `suki`.
-- [ ] `gamma` memperoleh IP melalui Relay.
-- [ ] `delta` memperoleh IP melalui Relay.
-- [ ] Fixed Address berhasil diuji.
-- [ ] DORA dapat diamati menggunakan packet capture.
-- [ ] Lease dapat ditemukan pada DHCP Server.
-- [ ] DHCP Server aktif setelah restart.
-- [ ] DHCP Relay aktif setelah restart.
-
----
-
-# 15. Catatan Penting
-
-Contoh konfigurasi pada bagian implementasi menggunakan alamat:
-
-```text
-10.40.1.0/24
-10.40.2.0/24
-```
-
-Alamat tersebut digunakan untuk mempermudah pembelajaran dan pembuatan hands-on.
-
-Pada pengerjaan soal praktikum:
-
-1. Gunakan prefix kelompok yang diberikan.
-2. Sesuaikan network dan subnet.
-3. Sesuaikan range DHCP.
-4. Sesuaikan gateway.
-5. Sesuaikan DNS.
-6. Sesuaikan interface berdasarkan topologi.
-7. Jangan menyalin contoh IP secara langsung apabila tidak sesuai dengan soal.
-
-Tujuan hands-on adalah memahami proses konfigurasi dan verifikasi, bukan menghafalkan nilai konfigurasi.
