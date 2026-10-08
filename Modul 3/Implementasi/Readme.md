@@ -125,7 +125,8 @@ iface eth2 inet static
     netmask 255.255.255.0
 ```
 
-![Konfigurasi Interface suki](<img width="683" height="447" alt="image" src="https://github.com/user-attachments/assets/0a136b82-645b-4bc9-9858-408e9549f6fb" />
+![Konfigurasi Interface suki](<img width="1069" height="438" alt="image" src="https://github.com/user-attachments/assets/8ffa33fd-6540-40fc-8908-d44f5ef19dd1" />
+
 )
 
 > Jangan mengubah konfigurasi `eth0` menjadi static jika interface tersebut digunakan untuk mendapatkan koneksi dari NAT GNS3. Sesuaikan dengan environment node yang digunakan.
