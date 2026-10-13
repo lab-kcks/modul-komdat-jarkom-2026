@@ -19,6 +19,7 @@ Materi ini merupakan kelanjutan dari materi Reverse Proxy pada Modul 2. Pada mod
   - [2.3 Inisialisasi Database dan Skema Tabel](#23-inisialisasi-database-dan-skema-tabel)
   - [2.4 Catatan Konfigurasi pada Alpinet](#24-catatan-konfigurasi-pada-alpinet)
   - [2.5 Verifikasi Koneksi Database](#25-verifikasi-koneksi-database)
+  - [2.6 Replikasi Database MariaDB (Master-Slave)](#26-replikasi-database-mariadb-master-slave)
 - [3. Implementasi Backend Worker Dinamis](#3-implementasi-backend-worker-dinamis)
   - [3.1 Instalasi Nginx, PHP, dan Driver Database](#31-instalasi-nginx-php-dan-driver-database)
   - [3.2 Mengenal PHP-FPM dan Protokol FastCGI](#32-mengenal-php-fpm-dan-protokol-fastcgi)
@@ -38,7 +39,9 @@ Materi ini merupakan kelanjutan dari materi Reverse Proxy pada Modul 2. Pada mod
     - [E. Generic Hash (hash)](#e-generic-hash-hash)
   - [4.4 Parameter Keandalan dan Failover (backup, down, max_fails)](#44-parameter-keandalan-dan-failover-backup-down-max_fails)
   - [4.5 Penggunaan Proxy Binding (proxy_bind)](#45-penggunaan-proxy-binding-proxy_bind)
-  - [4.6 Catatan Konfigurasi LB-Proxy pada Alpinet](#46-catatan-konfigurasi-lb-proxy-pada-alpinet)
+  - [4.6 Nginx Proxy Caching](#46-nginx-proxy-caching)
+  - [4.7 Nginx Rate Limiting](#47-nginx-rate-limiting)
+  - [4.8 Catatan Konfigurasi LB-Proxy pada Alpinet](#48-catatan-konfigurasi-lb-proxy-pada-alpinet)
 - [5. Pengujian Sistem, Failover, dan Analisis Beban](#5-pengujian-sistem-failover-dan-analisis-beban)
   - [5.1 Pengujian Distribusi Algoritma dari Client](#51-pengujian-distribusi-algoritma-dari-client)
   - [5.2 Pengujian Failover dan High Availability](#52-pengujian-failover-dan-high-availability)
@@ -259,6 +262,118 @@ Uji koneksi remote dari salah satu node worker (misalnya **`Worker1`**):
 
 Verifikasi Koneksi Remote:
 ![Uji Akses Remote MariaDB dari Worker](img/mariatest_worker1.png)
+
+---
+
+### **2.6 Replikasi Database MariaDB (Master-Slave)**
+
+Replikasi database adalah proses menyalin data secara otomatis dari satu server basis data (**Master**) ke server basis data lainnya (**Slave / Replica**).
+
+Tujuan dasar replikasi:
+- **Redundansi & Cadangan**: Memastikan data tetap aman di server Slave jika server Master mengalami kendala.
+- **Pemisahan Beban**: Operasi penulisan (*Write*) dilakukan di Master, sedangkan operasi pembacaan data (*Read*) dapat diarahkan ke Slave.
+
+```text
+[ Worker / Web Server ]
+           │ (INSERT / UPDATE)
+           ▼
+    [ DB-Master ] ─────────(Binary Log)─────────► [ DB-Slave ]
+   ([PREFIX].2.10)                               ([PREFIX].2.11)
+```
+
+#### **A. Konfigurasi pada DB-Master (`[PREFIX].2.10`)**
+
+1. Buka file konfigurasi MariaDB di `/etc/mysql/mariadb.conf.d/50-server.cnf`:
+   ```bash
+   nano /etc/mysql/mariadb.conf.d/50-server.cnf
+   ```
+
+2. Tambahkan atau aktifkan ID unik dan pencatatan *binary log* di bawah blok `[mysqld]`:
+   ```cnf
+   [mysqld]
+   server-id       = 1
+   log_bin         = /var/log/mysql/mariadb-bin.log
+   binlog_do_db    = db_jarkom
+   ```
+
+3. Restart layanan MariaDB:
+   ```bash
+   service mariadb restart
+   ```
+
+4. Masuk ke console MariaDB, buat akun pengguna khusus replikasi, dan catat posisi log:
+   ```sql
+   mariadb -u root
+
+   -- Buat user untuk akses slave
+   CREATE USER 'replica_user'@'%' IDENTIFIED BY 'password123';
+   GRANT REPLICATION SLAVE ON *.* TO 'replica_user'@'%';
+   FLUSH PRIVILEGES;
+
+   -- Lihat status file dan posisi binary log saat ini
+   SHOW MASTER STATUS;
+   ```
+   *Catat nilai kolom **File** (contoh: `mariadb-bin.000001`) dan **Position** (contoh: `612`).*
+
+---
+
+#### **B. Konfigurasi pada DB-Slave (`[PREFIX].2.11`)**
+
+1. Pada node kedua (**DB-Slave**), buka file konfigurasi MariaDB:
+   ```bash
+   nano /etc/mysql/mariadb.conf.d/50-server.cnf
+   ```
+
+2. Berikan *server-id* berbeda dari Master (misalnya 2):
+   ```cnf
+   [mysqld]
+   server-id       = 2
+   ```
+
+3. Restart layanan MariaDB:
+   ```bash
+   service mariadb restart
+   ```
+
+4. Masuk ke console MariaDB Slave dan hubungkan replikasi ke Master:
+   ```sql
+   mariadb -u root
+
+   -- Arahkan Slave ke data Master (sesuaikan IP dan parameter SHOW MASTER STATUS)
+   CHANGE MASTER TO
+       MASTER_HOST='10.91.2.10',
+       MASTER_USER='replica_user',
+       MASTER_PASSWORD='password123',
+       MASTER_LOG_FILE='mariadb-bin.000001',
+       MASTER_LOG_POS=612;
+
+   -- Jalankan proses sinkronisasi slave
+   START SLAVE;
+   ```
+
+---
+
+#### **C. Verifikasi Replikasi**
+
+1. Periksa status replikasi di terminal **DB-Slave**:
+   ```sql
+   SHOW SLAVE STATUS\G
+   ```
+   Pastikan parameter berikut bernilai **Yes**:
+   - `Slave_IO_Running: Yes` (berhasil terhubung dan membaca log Master)
+   - `Slave_SQL_Running: Yes` (berhasil mengeksekusi data ke database Slave)
+
+2. **Uji Pengiriman Data**:
+   - Di **DB-Master**: Masukkan data baru:
+     ```sql
+     USE db_jarkom;
+     INSERT INTO request_logs (worker_name, client_ip, proxy_ip) VALUES ('test-master', '10.91.1.2', '10.91.1.3');
+     ```
+   - Di **DB-Slave**: Periksa apakah data otomatis tersalin:
+     ```sql
+     USE db_jarkom;
+     SELECT * FROM request_logs;
+     ```
 
 ---
 
@@ -729,7 +844,118 @@ location / {
 
 ---
 
-### **4.6 Catatan Konfigurasi LB-Proxy pada Alpinet**
+### **4.6 Nginx Proxy Caching**
+
+*Proxy Caching* adalah fitur di mana Nginx Reverse Proxy menyimpan salinan dokumen atau respons dari server backend di media penyimpanan lokal (disk/memori proxy). 
+
+Ketika ada klien lain yang meminta halaman yang sama, Nginx langsung mengirimkan data dari *cache* lokal tanpa perlu meneruskan request ke server backend lagi. Hal ini meringankan beban pemrosesan worker dan mempercepat waktu respons ke klien.
+
+#### **A. Konfigurasi Proxy Caching di `LB-Proxy`**
+
+1. Definisikan jalur penyimpanan cache di dalam blok `http` pada `/etc/nginx/nginx.conf` atau di luar blok `server` pada `/etc/nginx/sites-available/load-balancer.conf`:
+   ```nginx
+   # Menentukan path penyimpanan cache dan alokasi memori indeks (10 MB)
+   proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:10m inactive=60m;
+   ```
+   > **Keterangan:**
+   > - `/var/cache/nginx`: Folder penyimpanan file cache di server proxy.
+   > - `levels=1:2`: Struktur hierarki subfolder dua tingkat untuk penataan file cache.
+   > - `keys_zone=my_cache:10m`: Nama zona memori (`my_cache`) dengan ukuran 10 MB untuk menyimpan metadata cache.
+   > - `inactive=60m`: Cache yang tidak diakses selama 60 menit akan dibersihkan otomatis.
+
+2. Aktifkan cache pada blok `location /` di file `/etc/nginx/sites-available/load-balancer.conf`:
+   ```nginx
+   location / {
+       proxy_pass http://backend_cluster;
+       proxy_set_header Host $host;
+       proxy_set_header X-Real-IP $remote_addr;
+       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+       # Mengaktifkan Caching
+       proxy_cache my_cache;
+       proxy_cache_valid 200 302 10m;  # Simpan cache status HTTP 200 & 302 selama 10 menit
+       proxy_cache_valid 404 1m;       # Simpan cache status 404 selama 1 menit
+
+       # Menambahkan header respon untuk melihat status cache (MISS / HIT)
+       add_header X-Cache-Status $upstream_cache_status;
+   }
+   ```
+
+3. Buat folder cache jika belum ada, periksa konfigurasi, dan muat ulang Nginx:
+   ```bash
+   mkdir -p /var/cache/nginx
+   nginx -t
+   service nginx reload
+   ```
+
+#### **B. Pengujian Proxy Caching dari Client**
+
+Jalankan perintah `curl -I` dua kali dari node **`Client`**:
+```bash
+# Request pertama (mengambil dari backend karena cache belum ada):
+curl -I http://10.91.1.3
+# Periksa header: X-Cache-Status: MISS
+
+# Request kedua (mengambil langsung dari cache Nginx):
+curl -I http://10.91.1.3
+# Periksa header: X-Cache-Status: HIT
+```
+
+---
+
+### **4.7 Nginx Rate Limiting**
+
+*Rate Limiting* digunakan untuk membatasi jumlah request masuk yang boleh dikirimkan oleh satu alamat IP klien dalam rentang waktu tertentu. Fitur ini berfungsi menjaga kestabilan server dari kebanjiran request (*traffic spike*) serta memitigasi serangan *Brute Force* atau DoS.
+
+Nginx menggunakan algoritma **Leaky Bucket**, di mana request diproses secara stabil sesuai kuota, dan request yang melebihi batas akan langsung ditolak.
+
+#### **A. Konfigurasi Rate Limiting di `LB-Proxy`**
+
+1. Definisikan zona pembatasan rate limit di luar blok `server` pada file `/etc/nginx/sites-available/load-balancer.conf`:
+   ```nginx
+   # Membatasi berdasarkan IP klien ($binary_remote_addr), kuota maksimal 10 request per detik
+   limit_req_zone $binary_remote_addr zone=limit_api:10m rate=10r/s;
+   ```
+   > **Keterangan:**
+   > - `$binary_remote_addr`: IP klien disimpan dalam representasi biner hemat memori (4 byte untuk IPv4).
+   > - `zone=limit_api:10m`: Nama zona memori dengan ukuran 10 MB (dapat menyimpan ~160.000 IP unik).
+   > - `rate=10r/s`: Batas kecepatan request yang diizinkan (10 request per detik).
+
+2. Pasang direktif pembatasan pada blok `location` yang ingin dibatasi:
+   ```nginx
+   location / {
+       proxy_pass http://backend_cluster;
+       proxy_set_header Host $host;
+       proxy_set_header X-Real-IP $remote_addr;
+
+       # Terapkan pembatasan rate limit
+       limit_req zone=limit_api;
+       limit_req_status 503; # Mengembalikan HTTP 503 saat request melebihi batas (default)
+   }
+   ```
+
+3. Uji konfigurasi dan muat ulang Nginx:
+   ```bash
+   nginx -t
+   service nginx reload
+   ```
+
+#### **B. Pengujian Rate Limiting dari Client**
+
+Kirimkan rentetan request cepat dari node **`Client`** menggunakan loop:
+```bash
+for i in {1..20}; do
+    curl -s -o /dev/null -w "Request $i: HTTP Status %{http_code}\n" http://10.91.1.3
+done
+```
+
+*Ekspektasi Hasil:*
+- Request awal dalam batas kuota akan menghasilkan status `200` (OK).
+- Request berikutnya yang melebihi batas 10 request/detik akan langsung menghasilkan respons `503` (*Service Unavailable*).
+
+---
+
+### **4.8 Catatan Konfigurasi LB-Proxy pada Alpinet**
 
 Jika node **`LB-Proxy`** menggunakan **Alpinet**:
 
