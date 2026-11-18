@@ -19,8 +19,6 @@ Implementasi ini menggantikan latihan berbasis Cisco Packet Tracer pada modul se
 | 3 | Server Water7 tidak diperbolehkan menerima koneksi HTTP | `INPUT` pada Water7, `DROP` dan `REJECT` |
 | 4 | Semua paket yang menuju PC Baratie diarahkan ke PC Mariejois | DNAT pada `PREROUTING` |
 
-Setelah keempatnya, bagian 10 membahas *default deny* dengan rule stateful, dan bagian 11 membahas cara menyimpan rule supaya tidak hilang saat node di-restart.
-
 > **Catatan:** IP address pada contoh implementasi menggunakan `10.50.1.0/24`, `10.50.2.0/24`, dan `10.50.3.0/24` agar langkah lebih mudah diikuti. Jika kelompok kalian memiliki prefix sendiri, ganti seluruh alamat secara konsisten, termasuk pada rule iptables.
 
 ---
